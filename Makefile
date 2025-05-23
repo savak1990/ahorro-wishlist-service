@@ -1,19 +1,19 @@
 APP_NAME=test-dynamodb-app
 APP_DIR=app
-BINARY=$(APP_DIR)/$(APP_NAME)
+BUILD_DIR=./build
+BINARY=$(BUILD_DIR)/$(APP_NAME)
 
 .PHONY: all build test run clean
 
-all: build
-
 build:
-    cd $(APP_DIR) && go build -o $(APP_NAME) main.go
+	mkdir -p $(BUILD_DIR)
+	cd $(APP_DIR) && go build -o ../$(BINARY) main.go	
 
 test:
-    cd $(APP_DIR) && go test ./...
+	cd $(APP_DIR) && go test ./...
 
 run: build
-    cd $(APP_DIR) && ./$(APP_NAME)
+	./$(BINARY)
 
 clean:
-    rm -f $(APP_DIR)/$(APP_NAME)
+	rm -f $(BUILD_DIR)

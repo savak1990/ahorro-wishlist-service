@@ -9,6 +9,7 @@
 .idea/
 
 # Go build cache and modules
+/build
 /app/bin/
 /app/pkg/
 /app/coverage.out

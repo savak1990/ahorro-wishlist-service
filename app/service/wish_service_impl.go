@@ -1,0 +1,22 @@
+package service
+
+import (
+	"context"
+
+	m "github.com/savak1990/test-dynamodb-app/app/models"
+	"github.com/savak1990/test-dynamodb-app/app/repo"
+)
+
+type WishServiceImpl struct {
+	wishRepo repo.WishRepository
+}
+
+func NewWishService(wishRepository repo.WishRepository) *WishServiceImpl {
+	return &WishServiceImpl{
+		wishRepo: wishRepository,
+	}
+}
+
+func (w *WishServiceImpl) CreateWish(ctx context.Context, wish m.Wish) error {
+	return w.wishRepo.CreateWish(ctx, wish)
+}

@@ -1,0 +1,22 @@
+# Binaries
+/app/test-dynamodb-app
+
+# OS files
+.DS_Store
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# Go build cache and modules
+/app/bin/
+/app/pkg/
+/app/coverage.out
+
+# Logs
+*.log
+
+# Terraform state
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate*

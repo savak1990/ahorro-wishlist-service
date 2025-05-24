@@ -38,3 +38,27 @@ func (m *MockDynamoDBClient) PutItem(ctx context.Context,
 	}
 	return out, args.Error(1)
 }
+
+func (m *MockDynamoDBClient) GetItem(ctx context.Context,
+	input *dynamodb.GetItemInput,
+	optFns ...func(*dynamodb.Options)) (*dynamodb.GetItemOutput, error) {
+
+	args := m.Called(ctx, input)
+	var out *dynamodb.GetItemOutput
+	if v := args.Get(0); v != nil {
+		out = v.(*dynamodb.GetItemOutput)
+	}
+	return out, args.Error(1)
+}
+
+func (m *MockDynamoDBClient) Query(ctx context.Context,
+	params *dynamodb.QueryInput,
+	optFns ...func(*dynamodb.Options)) (*dynamodb.QueryOutput, error) {
+
+	args := m.Called(ctx, params)
+	var out *dynamodb.QueryOutput
+	if v := args.Get(0); v != nil {
+		out = v.(*dynamodb.QueryOutput)
+	}
+	return out, args.Error(1)
+}

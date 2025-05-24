@@ -5,6 +5,8 @@ import (
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/aws/aws-sdk-go/aws"
 	m "github.com/savak1990/test-dynamodb-app/app/models"
 )
 
@@ -44,4 +46,54 @@ func (r *DynamoDbWishRepository) CreateWish(ctx context.Context, wish m.Wish) er
 	})
 
 	return err
+}
+
+func (r *DynamoDbWishRepository) GetWishByWishId(ctx context.Context, userId string, wishId string) (*m.Wish, error) {
+	result, err := r.client.GetItem(ctx, &dynamodb.GetItemInput{
+		TableName: &r.tableName,
+		Key: map[string]types.AttributeValue{
+			"userId": &types.AttributeValueMemberS{Value: userId},
+			"wishId": &types.AttributeValueMemberS{Value: wishId},
+		},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Item == nil {
+		return nil, nil
+	}
+
+	var wish m.Wish
+	err = dynamoDbUnmarshalMapFunc(result.Item, &wish)
+	if err != nil {
+		return nil, err
+	}
+
+	return &wish, nil
+}
+
+func (r *DynamoDbWishRepository) GetWishList(ctx context.Context, userId string) ([]m.Wish, error) {
+	result, err := r.client.Query(ctx, &dynamodb.QueryInput{
+		TableName:              &r.tableName,
+		KeyConditionExpression: aws.String("userId = :userId"),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":userId": &types.AttributeValueMemberS{Value: userId},
+		},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	log.Printf("Query result: %v\n", result)
+
+	var wishes []m.Wish
+	err = dynamoDbUnmarshalListOfMapsFunc(result.Items, &wishes)
+	if err != nil {
+		return nil, err
+	}
+
+	return wishes, nil
 }

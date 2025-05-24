@@ -17,3 +17,11 @@ func NewMockWishHandler() *MockWishHandler {
 func (m *MockWishHandler) CreateWish(w http.ResponseWriter, r *http.Request) {
 	m.Called(w, r)
 }
+
+func (m *MockWishHandler) GetWishByWishId(w http.ResponseWriter, r *http.Request) {
+	m.Called(w, r)
+}
+
+func (m *MockWishHandler) GetWishList(w http.ResponseWriter, r *http.Request) {
+	m.Called(w, r)
+}

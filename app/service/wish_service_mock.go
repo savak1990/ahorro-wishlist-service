@@ -19,3 +19,21 @@ func (svc *MockWishService) CreateWish(ctx context.Context, wish m.Wish) (*m.Wis
 	}
 	return retWish.(*m.Wish), args.Error(1)
 }
+
+func (svc *MockWishService) GetWishByWishId(ctx context.Context, userId, wishId string) (*m.Wish, error) {
+	args := svc.Called(ctx, userId, wishId)
+	retWish := args.Get(0)
+	if retWish == nil {
+		return nil, args.Error(1)
+	}
+	return retWish.(*m.Wish), args.Error(1)
+}
+
+func (svc *MockWishService) GetWishList(ctx context.Context, userId string) ([]m.Wish, error) {
+	args := svc.Called(ctx, userId)
+	retWishes := args.Get(0)
+	if retWishes == nil {
+		return nil, args.Error(1)
+	}
+	return retWishes.([]m.Wish), args.Error(1)
+}

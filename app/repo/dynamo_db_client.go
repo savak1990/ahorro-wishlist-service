@@ -14,4 +14,12 @@ type DynamoDbClient interface {
 	PutItem(ctx context.Context,
 		input *dynamodb.PutItemInput,
 		optFns ...func(*dynamodb.Options)) (*dynamodb.PutItemOutput, error)
+
+	GetItem(ctx context.Context,
+		input *dynamodb.GetItemInput,
+		optFns ...func(*dynamodb.Options)) (*dynamodb.GetItemOutput, error)
+
+	Query(ctx context.Context,
+		params *dynamodb.QueryInput,
+		optFns ...func(*dynamodb.Options)) (*dynamodb.QueryOutput, error)
 }

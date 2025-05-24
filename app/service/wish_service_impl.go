@@ -19,7 +19,7 @@ func NewWishService(wishRepository repo.WishRepository) *WishServiceImpl {
 }
 
 func (w *WishServiceImpl) CreateWish(ctx context.Context, wish m.Wish) (*m.Wish, error) {
-	wish.UserId = uuid.NewString()
+	wish.WishId = uuid.NewString()
 	err := w.wishRepo.CreateWish(ctx, wish)
 	if err != nil {
 		return nil, err

@@ -14,13 +14,17 @@ import (
 
 func main() {
 	appCfg := config.LoadConfig()
-	log.Printf("Loaded config: %+v\n", appCfg)
+	log.Printf("Loaded config: region=%s, profile=%s\n", appCfg.AWSRegion, appCfg.AWSProfile)
 
 	awsCfg := aws.LoadAWSConfig(appCfg.AWSRegion, appCfg.AWSProfile)
-	log.Printf("Loaded AWS config: %+v\n", awsCfg)
+	log.Printf("AWS Debug Info: Region=%s, RetryMode=%s, MaxRetries=%d\n",
+		awsCfg.Region,
+		awsCfg.RetryMode,
+		awsCfg.RetryMaxAttempts,
+	)
 
 	dbClient := aws.GetDynamoDbClient(awsCfg.Region)
-	log.Printf("DynamoDB client initialized: %+v\n", dbClient)
+	log.Printf("DynamoDB client info: EndpointResolver=%T\n", dbClient.Options().BaseEndpoint)
 
 	wishRepo := repo.NewDynamoDbWishRepository(dbClient, "AhorroWishlist")
 	wishService := service.NewWishService(wishRepo)

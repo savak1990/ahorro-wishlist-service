@@ -2,7 +2,7 @@ package repo
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	m "github.com/savak1990/test-dynamodb-app/app/models"
@@ -28,7 +28,7 @@ func validateTable(ctx context.Context, client DynamoDbClient, tableName string)
 	if err != nil {
 		panic("Failed to describe DynamoDB table: " + err.Error())
 	}
-	fmt.Printf("DynamoDB table %s is valid\n", tableName)
+	log.Printf("DynamoDB table %s is valid\n", tableName)
 }
 
 func (r *DynamoDbWishRepository) CreateWish(ctx context.Context, wish m.Wish) error {

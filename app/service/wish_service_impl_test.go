@@ -21,13 +21,15 @@ func Test_CreateWish(t *testing.T) {
 		defer createWishFunc.Unset()
 
 		inputWish := m.Wish{
+			UserId:  "1",
 			Content: "Test Wish",
 		}
 		outputWish, err := testWishService.CreateWish(ctx, inputWish)
 
 		assert.NoError(t, err)
 		assert.NotNil(t, outputWish)
-		assert.NotEmpty(t, outputWish.UserId)
+		assert.Equal(t, "1", outputWish.UserId)
+		assert.NotEmpty(t, outputWish.WishId)
 		assert.Equal(t, inputWish.Content, outputWish.Content)
 		mockRepo.AssertExpectations(t)
 	})
@@ -38,14 +40,15 @@ func Test_CreateWish(t *testing.T) {
 
 		inputWish := m.Wish{
 			UserId:  "1",
+			WishId:  "2",
 			Content: "Test Wish",
 		}
 		outputWish, err := testWishService.CreateWish(ctx, inputWish)
 
 		assert.NoError(t, err)
 		assert.NotNil(t, outputWish)
-		assert.NotEmpty(t, outputWish.UserId)
-		assert.NotEqual(t, inputWish.UserId, outputWish.UserId)
+		assert.NotEmpty(t, outputWish.WishId)
+		assert.NotEqual(t, inputWish.WishId, outputWish.WishId)
 		assert.Equal(t, inputWish.Content, outputWish.Content)
 		mockRepo.AssertExpectations(t)
 	})

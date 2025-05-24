@@ -7,5 +7,5 @@ import (
 )
 
 type WishService interface {
-	CreateWish(ctx context.Context, wish m.Wish) error
+	CreateWish(ctx context.Context, wish m.Wish) (*m.Wish, error)
 }

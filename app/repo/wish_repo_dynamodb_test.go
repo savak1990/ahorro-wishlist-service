@@ -30,7 +30,7 @@ func TestCreateWish(t *testing.T) {
 		defer mockPutItem.Unset()
 
 		wish := m.Wish{
-			ID:       "1",
+			UserId:   "1",
 			Title:    "mockTitle",
 			Priority: 1,
 		}
@@ -49,7 +49,7 @@ func TestCreateWish(t *testing.T) {
 		defer func() { dynamoDbMarshalMapFunc = originalMarshalMap }()
 
 		invalidWish := m.Wish{
-			ID:      "1",
+			UserId:  "1",
 			Content: "Test Wish",
 		}
 
@@ -64,7 +64,7 @@ func TestCreateWish(t *testing.T) {
 		defer mockPutItem.Unset()
 
 		wish := m.Wish{
-			ID:      "2",
+			UserId:  "2",
 			Content: "Another Test Wish",
 		}
 

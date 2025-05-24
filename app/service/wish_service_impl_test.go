@@ -20,13 +20,33 @@ func Test_CreateWish(t *testing.T) {
 		createWishFunc := mockRepo.On("CreateWish", ctx, mock.Anything).Return(nil)
 		defer createWishFunc.Unset()
 
-		wish := m.Wish{
-			ID:      "1",
+		inputWish := m.Wish{
 			Content: "Test Wish",
 		}
-		err := testWishService.CreateWish(ctx, wish)
+		outputWish, err := testWishService.CreateWish(ctx, inputWish)
 
 		assert.NoError(t, err)
+		assert.NotNil(t, outputWish)
+		assert.NotEmpty(t, outputWish.UserId)
+		assert.Equal(t, inputWish.Content, outputWish.Content)
+		mockRepo.AssertExpectations(t)
+	})
+
+	t.Run("SuccessWithUserId", func(t *testing.T) {
+		createWishFunc := mockRepo.On("CreateWish", ctx, mock.Anything).Return(nil)
+		defer createWishFunc.Unset()
+
+		inputWish := m.Wish{
+			UserId:  "1",
+			Content: "Test Wish",
+		}
+		outputWish, err := testWishService.CreateWish(ctx, inputWish)
+
+		assert.NoError(t, err)
+		assert.NotNil(t, outputWish)
+		assert.NotEmpty(t, outputWish.UserId)
+		assert.NotEqual(t, inputWish.UserId, outputWish.UserId)
+		assert.Equal(t, inputWish.Content, outputWish.Content)
 		mockRepo.AssertExpectations(t)
 	})
 
@@ -34,13 +54,14 @@ func Test_CreateWish(t *testing.T) {
 		mockCreateWishFunc := mockRepo.On("CreateWish", ctx, mock.Anything).Return(errors.New("mock error"))
 		defer mockCreateWishFunc.Unset()
 
-		wish := m.Wish{
-			ID:      "2",
+		inputWish := m.Wish{
 			Content: "Test Wish",
 		}
-		err := testWishService.CreateWish(ctx, wish)
+		outputWish, err := testWishService.CreateWish(ctx, inputWish)
 
 		assert.Error(t, err)
+		assert.Nil(t, outputWish)
+		assert.Equal(t, "mock error", err.Error())
 		mockRepo.AssertExpectations(t)
 	})
 }

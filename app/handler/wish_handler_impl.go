@@ -28,10 +28,19 @@ func (h *WishHandlerImpl) CreateWish(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if err := h.wishService.CreateWish(ctx, wish); err != nil {
+	outputWish, err := h.wishService.CreateWish(ctx, wish)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	response, err := json.Marshal(outputWish)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+	w.Write(response)
 }

@@ -1,7 +1,7 @@
 package models
 
 type Wish struct {
-	ID       string `json:"id" dynamodbav:"id"`
+	UserId   string `json:"userId" dynamodbav:"userId"`
 	Title    string `json:"title" dynamodbav:"title"`
 	Content  string `json:"content" dynamodbav:"content"`
 	Priority int    `json:"priority" dynamodbav:"priority"`

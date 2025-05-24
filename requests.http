@@ -1,0 +1,58 @@
+@baseUrl = http://localhost:8080
+
+### Create a new wish for user1
+
+POST {{baseUrl}}/wishes/user1
+Content-Type: application/json
+
+{
+    "title": "Learn Python",
+    "wishId": "wish1",
+    "content": "Work through Python tutorials and build a project.",
+    "priority": 1,
+    "created": "2024-05-22T10:00:00Z",
+    "updated": "2024-05-22T10:00:00Z",
+    "due_date": "2024-06-01T00:00:00Z"
+}
+
+### Create another wish for user1
+
+POST {{baseUrl}}/wishes/user1
+Content-Type: application/json
+
+{
+    "title": "Learn Go",
+    "wishId": "wish2",
+    "content": "Work through Go tutorials and build a project.",
+    "priority": 2,
+    "created": "2024-05-22T10:00:00Z",
+    "updated": "2024-05-22T10:00:00Z",
+    "due_date": "2024-06-01T00:00:00Z"
+}
+
+### Create a wish for user2
+POST {{baseUrl}}/wishes/user2
+Content-Type: application/json
+
+{
+    "title": "Learn JavaScript",
+    "wishId": "wish3",
+    "content": "Work through JavaScript tutorials and build a project.",
+    "priority": 1,
+    "created": "2024-05-22T10:00:00Z",
+    "updated": "2024-05-22T10:00:00Z",
+    "due_date": "2024-06-01T00:00:00Z"
+}
+
+### Get all wishes for user1
+GET {{baseUrl}}/wishes/user1
+
+### Get all wishes for user2
+
+GET {{baseUrl}}/wishes/user2
+
+### Get a specific wish for user1
+GET {{baseUrl}}/wishes/user1/wish1
+
+### Get non-existent wish for user1
+GET {{baseUrl}}/wishes/user1/wish999

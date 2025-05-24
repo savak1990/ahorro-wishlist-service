@@ -48,7 +48,7 @@ func Test_CreateWish(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, outputWish)
 		assert.NotEmpty(t, outputWish.WishId)
-		assert.NotEqual(t, inputWish.WishId, outputWish.WishId)
+		assert.Equal(t, inputWish.WishId, outputWish.WishId)
 		assert.Equal(t, inputWish.Content, outputWish.Content)
 		mockRepo.AssertExpectations(t)
 	})

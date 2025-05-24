@@ -23,12 +23,20 @@ func NewWishHandler(service service.WishService) *WishHandlerImpl {
 func (h *WishHandlerImpl) CreateWish(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
+	userId := mux.Vars(r)["userId"]
+	if userId == "" {
+		utils.WriteJSONError(w, http.StatusBadRequest, m.ErrorCodeBadRequest, "userId is required")
+		return
+	}
+
 	var wish m.Wish
 	if err := json.NewDecoder(r.Body).Decode(&wish); err != nil {
 		utils.WriteJSONError(w, http.StatusBadRequest, m.ErrorCodeBadRequest, "Failed to decode request body: "+err.Error())
 		return
 	}
 	defer r.Body.Close()
+
+	wish.UserId = userId
 
 	outputWish, err := h.wishService.CreateWish(ctx, wish)
 	if err != nil {
@@ -76,8 +84,14 @@ func (h *WishHandlerImpl) GetWishByWishId(w http.ResponseWriter, r *http.Request
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(response)
+
+	if wish == nil {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	} else {
+		w.Write(response)
+		w.WriteHeader(http.StatusOK)
+	}
 }
 
 func (h *WishHandlerImpl) GetWishList(w http.ResponseWriter, r *http.Request) {

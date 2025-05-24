@@ -87,8 +87,6 @@ func (r *DynamoDbWishRepository) GetWishList(ctx context.Context, userId string)
 		return nil, err
 	}
 
-	log.Printf("Query result: %v\n", result)
-
 	var wishes []m.Wish
 	err = dynamoDbUnmarshalListOfMapsFunc(result.Items, &wishes)
 	if err != nil {

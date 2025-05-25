@@ -87,10 +87,9 @@ func (h *WishHandlerImpl) GetWishByWishId(w http.ResponseWriter, r *http.Request
 
 	if wish == nil {
 		w.WriteHeader(http.StatusNoContent)
-		return
 	} else {
-		w.Write(response)
 		w.WriteHeader(http.StatusOK)
+		w.Write(response)
 	}
 }
 

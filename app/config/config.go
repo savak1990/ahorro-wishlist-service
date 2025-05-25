@@ -5,12 +5,14 @@ import "os"
 type AppConfig struct {
 	AWSRegion  string
 	AWSProfile string
+	TableName  string
 }
 
 func LoadConfig() AppConfig {
 	return AppConfig{
 		AWSRegion:  getEnv("AWS_REGION", "us-east-1"),
-		AWSProfile: os.Getenv("AWS_PROFILE"), // optional
+		AWSProfile: os.Getenv("AWS_PROFILE"),
+		TableName:  os.Getenv("DYNAMODB_TABLE"),
 	}
 }
 

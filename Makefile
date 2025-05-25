@@ -1,9 +1,14 @@
-APP_NAME=test-dynamodb-app
+APP_NAME=ahorro-wishlist-service
+INSTANCE_NAME=vklyovan
+FULL_NAME=$(APP_NAME)-$(INSTANCE_NAME)
+DB_TABLE_NAME=$(FULL_NAME)-db
+DB_TABLE_TEST_NAME=$(FULL_NAME)-test-db
+
 APP_DIR=app
 BUILD_DIR=./build
-BINARY=$(BUILD_DIR)/$(APP_NAME)
+BINARY=$(BUILD_DIR)/$(FULL_NAME)
 
-.PHONY: all build test run clean
+.PHONY: all build test run clean functional-test deploy undeploy
 
 build:
 	mkdir -p $(BUILD_DIR)
@@ -13,7 +18,20 @@ test:
 	cd $(APP_DIR) && go test ./...
 
 run: build
-	./$(BINARY)
+	DYNAMODB_TABLE=$(DB_TABLE_NAME) ./$(BINARY)
+
+functional-test:
+	@if [ ! -d ".venv" ]; then python3 -m venv .venv; fi
+	. .venv/bin/activate && pip3 install -r test/requirements.txt
+	cd terraform && terraform init && terraform apply -auto-approve -var="db_table_name=$(DB_TABLE_TEST_NAME)"
+	-DYNAMODB_TABLE=$(DB_TABLE_TEST_NAME) . .venv/bin/activate && pytest test; \
+		cd terraform && terraform destroy -auto-approve -var="db_table_name=$(DB_TABLE_TEST_NAME)"
+
+deploy:
+	cd terraform && terraform init && terraform apply -auto-approve -var="db_table_name=$(DB_TABLE_NAME)"
+
+undeploy:
+	cd terraform && terraform destroy -auto-approve -var="db_table_name=$(DB_TABLE_NAME)"
 
 clean:
-	rm -f $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)

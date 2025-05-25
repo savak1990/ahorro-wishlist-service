@@ -22,7 +22,7 @@ func main() {
 	dbClient := aws.GetDynamoDbClient(awsCfg)
 	log.Printf("DynamoDB client info: EndpointResolver=%T\n", dbClient.Options().BaseEndpoint)
 
-	wishRepo := repo.NewDynamoDbWishRepository(dbClient, "AhorroWishlist")
+	wishRepo := repo.NewDynamoDbWishRepository(dbClient, appCfg.TableName)
 	wishService := service.NewWishService(wishRepo)
 	wishHandler := handler.NewWishHandler(wishService)
 

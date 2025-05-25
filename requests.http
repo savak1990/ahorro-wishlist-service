@@ -1,7 +1,12 @@
 @baseUrl = http://localhost:8080
 
-### Create a new wish for user1
+### Info
+GET {{baseUrl}}/info
 
+### Health Check
+GET {{baseUrl}}/health
+
+### Create a new wish for user1
 POST {{baseUrl}}/wishes/user1
 Content-Type: application/json
 
@@ -16,7 +21,6 @@ Content-Type: application/json
 }
 
 ### Create another wish for user1
-
 POST {{baseUrl}}/wishes/user1
 Content-Type: application/json
 
@@ -48,7 +52,6 @@ Content-Type: application/json
 GET {{baseUrl}}/wishes/user1
 
 ### Get all wishes for user2
-
 GET {{baseUrl}}/wishes/user2
 
 ### Get a specific wish for user1

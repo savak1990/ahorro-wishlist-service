@@ -3,6 +3,7 @@ package aws
 import (
 	"sync"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 )
 
@@ -11,9 +12,8 @@ var (
 	dbClientOnce sync.Once
 )
 
-func GetDynamoDbClient(region string) *dynamodb.Client {
+func GetDynamoDbClient(cfg aws.Config) *dynamodb.Client {
 	dbClientOnce.Do(func() {
-		cfg := LoadAWSConfig(region, "")
 		dbClient = dynamodb.NewFromConfig(cfg)
 	})
 	if dbClient == nil {

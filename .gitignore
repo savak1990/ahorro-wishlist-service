@@ -14,6 +14,34 @@
 /app/pkg/
 /app/coverage.out
 
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+*.manifest
+*.spec
+
+# pytest
+.cache/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.tox/
+htmlcov/
+
 # Logs
 *.log
 

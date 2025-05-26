@@ -62,3 +62,27 @@ func (m *MockDynamoDBClient) Query(ctx context.Context,
 	}
 	return out, args.Error(1)
 }
+
+func (m *MockDynamoDBClient) UpdateItem(ctx context.Context,
+	input *dynamodb.UpdateItemInput,
+	optFns ...func(*dynamodb.Options)) (*dynamodb.UpdateItemOutput, error) {
+
+	args := m.Called(ctx, input)
+	var out *dynamodb.UpdateItemOutput
+	if v := args.Get(0); v != nil {
+		out = v.(*dynamodb.UpdateItemOutput)
+	}
+	return out, args.Error(1)
+}
+
+func (m *MockDynamoDBClient) DeleteItem(ctx context.Context,
+	input *dynamodb.DeleteItemInput,
+	optFns ...func(*dynamodb.Options)) (*dynamodb.DeleteItemOutput, error) {
+
+	args := m.Called(ctx, input)
+	var out *dynamodb.DeleteItemOutput
+	if v := args.Get(0); v != nil {
+		out = v.(*dynamodb.DeleteItemOutput)
+	}
+	return out, args.Error(1)
+}

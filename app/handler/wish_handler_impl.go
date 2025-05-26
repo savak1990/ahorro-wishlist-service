@@ -118,3 +118,72 @@ func (h *WishHandlerImpl) GetWishList(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
+
+func (h *WishHandlerImpl) UpdateWish(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	userId := mux.Vars(r)["userId"]
+	if userId == "" {
+		utils.WriteJSONError(w, http.StatusBadRequest, m.ErrorCodeBadRequest, "userId is required")
+		return
+	}
+
+	wishId := mux.Vars(r)["wishId"]
+	if wishId == "" {
+		utils.WriteJSONError(w, http.StatusBadRequest, m.ErrorCodeBadRequest, "wishId is required")
+		return
+	}
+
+	var wish m.Wish
+	if err := json.NewDecoder(r.Body).Decode(&wish); err != nil {
+		utils.WriteJSONError(w, http.StatusBadRequest, m.ErrorCodeBadRequest, "Failed to decode request body: "+err.Error())
+		return
+	}
+	defer r.Body.Close()
+
+	wish.UserId = userId
+	wish.WishId = wishId
+
+	outputWish, err := h.wishService.UpdateWish(ctx, wish)
+	if err != nil {
+		utils.WriteJSONError(w, http.StatusInternalServerError, m.ErrorCodeInternalServer, "Failed to update wish: "+err.Error())
+		return
+	}
+
+	response, err := json.Marshal(outputWish)
+	if err != nil {
+		utils.WriteJSONError(w, http.StatusInternalServerError, m.ErrorCodeBadResponse, "Failed to marshal response: "+err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
+}
+
+func (h *WishHandlerImpl) DeleteWish(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	userId := mux.Vars(r)["userId"]
+	if userId == "" {
+		utils.WriteJSONError(w, http.StatusBadRequest, m.ErrorCodeBadRequest, "userId is required")
+		return
+	}
+
+	wishId := mux.Vars(r)["wishId"]
+	if wishId == "" {
+		utils.WriteJSONError(w, http.StatusBadRequest, m.ErrorCodeBadRequest, "wishId is required")
+		return
+	}
+
+	err := h.wishService.DeleteWish(ctx, userId, wishId)
+	if err != nil {
+		utils.WriteJSONError(w, http.StatusInternalServerError, m.ErrorCodeInternalServer, "Failed to delete wish: "+err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// Ensure WishHandlerImpl implements WishHandler interface
+var _ WishHandler = (*WishHandlerImpl)(nil)

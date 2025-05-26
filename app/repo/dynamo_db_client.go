@@ -22,4 +22,12 @@ type DynamoDbClient interface {
 	Query(ctx context.Context,
 		params *dynamodb.QueryInput,
 		optFns ...func(*dynamodb.Options)) (*dynamodb.QueryOutput, error)
+
+	UpdateItem(ctx context.Context,
+		input *dynamodb.UpdateItemInput,
+		optFns ...func(*dynamodb.Options)) (*dynamodb.UpdateItemOutput, error)
+
+	DeleteItem(ctx context.Context,
+		input *dynamodb.DeleteItemInput,
+		optFns ...func(*dynamodb.Options)) (*dynamodb.DeleteItemOutput, error)
 }

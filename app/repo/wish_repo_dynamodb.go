@@ -2,7 +2,9 @@ package repo
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
@@ -95,3 +97,53 @@ func (r *DynamoDbWishRepository) GetWishList(ctx context.Context, userId string)
 
 	return wishes, nil
 }
+
+func (r *DynamoDbWishRepository) UpdateWish(ctx context.Context, wish m.Wish) (*m.Wish, error) {
+	// Set Updated to current time in RFC3339 format
+	wish.Updated = time.Now().UTC().Format(time.RFC3339)
+
+	_, err := r.client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
+		TableName: &r.tableName,
+		Key: map[string]types.AttributeValue{
+			"userId": &types.AttributeValueMemberS{Value: wish.UserId},
+			"wishId": &types.AttributeValueMemberS{Value: wish.WishId},
+		},
+		ExpressionAttributeNames: map[string]string{
+			"#title":    "title",
+			"#content":  "content",
+			"#priority": "priority",
+			"#updated":  "updated",
+			"#due_date": "due_date",
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":title":    &types.AttributeValueMemberS{Value: wish.Title},
+			":content":  &types.AttributeValueMemberS{Value: wish.Content},
+			":priority": &types.AttributeValueMemberN{Value: fmt.Sprintf("%d", wish.Priority)},
+			":updated":  &types.AttributeValueMemberS{Value: wish.Updated},
+			":due_date": &types.AttributeValueMemberS{Value: wish.DueDate},
+		},
+		UpdateExpression: aws.String("SET #title = :title, #content = :content, #priority = :priority, #updated = :updated, #due_date = :due_date"),
+		ReturnValues:     types.ReturnValueAllNew,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Fetch the updated wish and return it
+	return r.GetWishByWishId(ctx, wish.UserId, wish.WishId)
+}
+
+func (r *DynamoDbWishRepository) DeleteWish(ctx context.Context, userId string, wishId string) error {
+	_, err := r.client.DeleteItem(ctx, &dynamodb.DeleteItemInput{
+		TableName: &r.tableName,
+		Key: map[string]types.AttributeValue{
+			"userId": &types.AttributeValueMemberS{Value: userId},
+			"wishId": &types.AttributeValueMemberS{Value: wishId},
+		},
+	})
+
+	return err
+}
+
+// Ensure DynamoDbWishRepository implements WishRepository interface
+var _ WishRepository = (*DynamoDbWishRepository)(nil)

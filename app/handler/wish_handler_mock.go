@@ -25,3 +25,14 @@ func (m *MockWishHandler) GetWishByWishId(w http.ResponseWriter, r *http.Request
 func (m *MockWishHandler) GetWishList(w http.ResponseWriter, r *http.Request) {
 	m.Called(w, r)
 }
+
+func (m *MockWishHandler) UpdateWish(w http.ResponseWriter, r *http.Request) {
+	m.Called(w, r)
+}
+
+func (m *MockWishHandler) DeleteWish(w http.ResponseWriter, r *http.Request) {
+	m.Called(w, r)
+}
+
+// Ensure MockWishHandler implements WishHandler interface
+var _ WishHandler = (*MockWishHandler)(nil)

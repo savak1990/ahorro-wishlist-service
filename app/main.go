@@ -31,9 +31,11 @@ func main() {
 	router := mux.NewRouter()
 	router.Use(mux.CORSMethodMiddleware(router))
 
-	router.HandleFunc("/wishes/{userId}", wishHandler.CreateWish).Methods("POST")
 	router.HandleFunc("/wishes/{userId}/{wishId}", wishHandler.GetWishByWishId).Methods("GET")
 	router.HandleFunc("/wishes/{userId}", wishHandler.GetWishList).Methods("GET")
+	router.HandleFunc("/wishes/{userId}", wishHandler.CreateWish).Methods("POST")
+	router.HandleFunc("/wishes/{userId}/{wishId}", wishHandler.UpdateWish).Methods("PUT")
+	router.HandleFunc("/wishes/{userId}/{wishId}", wishHandler.DeleteWish).Methods("DELETE")
 
 	router.HandleFunc("/health", commonHandler.HandleHealth).Methods("GET")
 	router.HandleFunc("/info", commonHandler.HandleInfo).Methods("GET")

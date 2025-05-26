@@ -36,3 +36,18 @@ func (w *WishServiceImpl) GetWishByWishId(ctx context.Context, userId, wishId st
 func (w *WishServiceImpl) GetWishList(ctx context.Context, userId string) ([]m.Wish, error) {
 	return w.wishRepo.GetWishList(ctx, userId)
 }
+
+func (w *WishServiceImpl) UpdateWish(ctx context.Context, wish m.Wish) (*m.Wish, error) {
+	updatedWish, err := w.wishRepo.UpdateWish(ctx, wish)
+	if err != nil {
+		return nil, err
+	}
+	return updatedWish, nil
+}
+
+func (w *WishServiceImpl) DeleteWish(ctx context.Context, userId, wishId string) error {
+	return w.wishRepo.DeleteWish(ctx, userId, wishId)
+}
+
+// Ensure WishServiceImpl implements WishService interface
+var _ WishService = (*WishServiceImpl)(nil)

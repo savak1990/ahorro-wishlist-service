@@ -4,15 +4,17 @@ import pytest
 import requests
 import os
 
-# test/conftest.py
-
 @pytest.fixture(scope="session", autouse=True)
 def go_server():
     env = os.environ.copy()
-    run_cmd = ["make", "build"]
-    subprocess.run(run_cmd, env=env, check=True)
+
+    # Require BINARY to be set in the environment
+    binary_path = env.get("BINARY")
+    if not binary_path:
+        raise RuntimeError("BINARY environment variable must be set (passed via Makefile)")
+
     server = subprocess.Popen(
-        ["./build/ahorro-wishlist-service-vklyovan"], env=env
+        [binary_path], env=env
     )
     # Wait for server to be ready
     for _ in range(20):

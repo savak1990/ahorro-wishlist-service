@@ -17,15 +17,15 @@ build:
 test:
 	cd $(APP_DIR) && go test ./...
 
-run: build
+run:
 	DYNAMODB_TABLE=$(DB_TABLE_NAME) ./$(BINARY)
 
 functional-test:
-	@if [ ! -d ".venv" ]; then python3 -m venv .venv; fi
-	. .venv/bin/activate && pip3 install -r test/requirements.txt
-	cd terraform && terraform init && terraform apply -auto-approve -var="db_table_name=$(DB_TABLE_TEST_NAME)"
-	-DYNAMODB_TABLE=$(DB_TABLE_TEST_NAME) . .venv/bin/activate && pytest test; \
-		cd terraform && terraform destroy -auto-approve -var="db_table_name=$(DB_TABLE_TEST_NAME)"
+	@if [ ! -d ".venv" ]; then python3 -m venv .venv; fi && \
+	. .venv/bin/activate && python3 -m pip install -r test/requirements.txt && \
+	cd deploy && terraform init && terraform apply -auto-approve -var="db_table_name=$(DB_TABLE_TEST_NAME)" && \
+	DYNAMODB_TABLE=$(DB_TABLE_TEST_NAME) BINARY=$(BINARY) pytest ../test && \
+	cd deploy && terraform destroy -auto-approve -var="db_table_name=$(DB_TABLE_TEST_NAME)"
 
 deploy:
 	cd terraform && terraform init && terraform apply -auto-approve -var="db_table_name=$(DB_TABLE_NAME)"
@@ -34,4 +34,4 @@ undeploy:
 	cd terraform && terraform destroy -auto-approve -var="db_table_name=$(DB_TABLE_NAME)"
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR) $(.venv) .pytest_cache .coverage

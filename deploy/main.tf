@@ -4,6 +4,8 @@ provider "aws" {
   default_tags {
     tags = {
       Environment = "dev"
+      Project     = "ahorro-app"
+      Service     = "ahorro-wishlist-service"
       Terraform   = "true"
     }
   }

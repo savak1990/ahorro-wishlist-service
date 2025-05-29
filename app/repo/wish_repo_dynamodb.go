@@ -47,8 +47,9 @@ func (r *DynamoDbWishRepository) CreateWish(ctx context.Context, wish m.Wish) er
 	}
 
 	_, err = r.client.PutItem(ctx, &dynamodb.PutItemInput{
-		TableName: &r.tableName,
-		Item:      item,
+		TableName:           &r.tableName,
+		Item:                item,
+		ConditionExpression: aws.String("attribute_not_exists(userId) AND attribute_not_exists(wishId)"),
 	})
 
 	return err
@@ -130,16 +131,20 @@ func (r *DynamoDbWishRepository) UpdateWish(ctx context.Context, wish m.Wish) (*
 			"#priority": "priority",
 			"#updated":  "updated",
 			"#due":      "due",
+			"#version":  "version",
 		},
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":title":    &types.AttributeValueMemberS{Value: wish.Title},
-			":content":  &types.AttributeValueMemberS{Value: wish.Content},
-			":priority": &types.AttributeValueMemberN{Value: fmt.Sprintf("%d", wish.Priority)},
-			":updated":  &types.AttributeValueMemberS{Value: wish.Updated},
-			":due":      &types.AttributeValueMemberS{Value: wish.Due},
+			":title":           &types.AttributeValueMemberS{Value: wish.Title},
+			":content":         &types.AttributeValueMemberS{Value: wish.Content},
+			":priority":        &types.AttributeValueMemberN{Value: fmt.Sprintf("%d", wish.Priority)},
+			":updated":         &types.AttributeValueMemberS{Value: wish.Updated},
+			":due":             &types.AttributeValueMemberS{Value: wish.Due},
+			":newVersion":      &types.AttributeValueMemberN{Value: fmt.Sprintf("%d", wish.Version+1)},
+			":expectedVersion": &types.AttributeValueMemberN{Value: fmt.Sprintf("%d", wish.Version)},
 		},
-		UpdateExpression: aws.String("SET #title = :title, #content = :content, #priority = :priority, #updated = :updated, #due = :due"),
-		ReturnValues:     types.ReturnValueAllNew,
+		UpdateExpression:    aws.String("SET #title = :title, #content = :content, #priority = :priority, #updated = :updated, #due = :due, #version = :newVersion"),
+		ConditionExpression: aws.String("#version = :expectedVersion"),
+		ReturnValues:        types.ReturnValueAllNew,
 	})
 	if err != nil {
 		return nil, err
@@ -153,7 +158,8 @@ func (r *DynamoDbWishRepository) DeleteWish(ctx context.Context, userId string, 
 	log.WithField("userId", userId).WithField("wishId", wishId).Debug("Repo: Deleting wish")
 
 	_, err := r.client.DeleteItem(ctx, &dynamodb.DeleteItemInput{
-		TableName: &r.tableName,
+		TableName:           &r.tableName,
+		ConditionExpression: aws.String("attribute_exists(userId) AND attribute_exists(wishId)"),
 		Key: map[string]types.AttributeValue{
 			"userId": &types.AttributeValueMemberS{Value: userId},
 			"wishId": &types.AttributeValueMemberS{Value: wishId},

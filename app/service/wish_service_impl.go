@@ -38,6 +38,7 @@ func (w *WishServiceImpl) CreateWish(ctx context.Context, wish m.Wish) (*m.Wish,
 	wish.Created = nowFormatted
 	wish.Updated = nowFormatted
 	wish.All = "all"
+	wish.Version = 0
 
 	if wish.Priority == 0 {
 		wish.Priority = 5
@@ -58,7 +59,13 @@ func (w *WishServiceImpl) UpdateWish(ctx context.Context, wish m.Wish) (*m.Wish,
 
 	log.WithField("wish", wish).Debug("Service: Updating wish")
 
+	curWish, err := w.wishRepo.GetWishByWishId(ctx, wish.UserId, wish.WishId)
+	if err != nil {
+		return nil, errors.New(m.ErrorCodeInternalServer + ": Failed to fetch wish: " + err.Error())
+	}
+
 	wish.Updated = time.Now().UTC().Format(time.RFC3339)
+	wish.Version = curWish.Version
 
 	updatedWish, err := w.wishRepo.UpdateWish(ctx, wish)
 	if err != nil {

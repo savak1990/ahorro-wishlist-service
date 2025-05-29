@@ -10,4 +10,5 @@ type Wish struct {
 	Updated  string `json:"updated" dynamodbav:"updated"`
 	Due      string `json:"due" dynamodbav:"due"`
 	All      string `json:"-" dynamodbav:"all"`
+	Version  int    `json:"-" dynamodbav:"version"`
 }

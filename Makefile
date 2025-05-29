@@ -1,4 +1,4 @@
-APP_NAME=ahorro-wishlist-service
+APP_NAME=ahorro-wishlist
 INSTANCE_NAME=$(shell whoami)
 FULL_NAME=$(APP_NAME)-$(INSTANCE_NAME)
 DB_TABLE_NAME=$(FULL_NAME)-db
@@ -17,7 +17,7 @@ build:
 test:
 	cd $(APP_DIR) && go test ./...
 
-run:
+run: build
 	DYNAMODB_TABLE=$(DB_TABLE_NAME) ./$(BINARY)
 
 functional-test:
@@ -28,10 +28,10 @@ functional-test:
 	cd deploy && terraform destroy -auto-approve -var="db_table_name=$(DB_TABLE_TEST_NAME)"
 
 deploy:
-	cd terraform && terraform init && terraform apply -auto-approve -var="db_table_name=$(DB_TABLE_NAME)"
+	cd deploy && terraform init && terraform apply -auto-approve -var="db_table_name=$(DB_TABLE_NAME)"
 
 undeploy:
-	cd terraform && terraform destroy -auto-approve -var="db_table_name=$(DB_TABLE_NAME)"
+	cd deploy && terraform destroy -auto-approve -var="db_table_name=$(DB_TABLE_NAME)"
 
 clean:
 	rm -rf $(BUILD_DIR) $(.venv) .pytest_cache .coverage

@@ -11,12 +11,11 @@ provider "aws" {
   }
 }
 
-variable "db_table_name" {
-  description = "The name of the DynamoDB table"
-  type        = string
-}
-
 module "service_db" {
-  source        = "../terraform"
-  db_table_name = var.db_table_name
+  source              = "../terraform/dynamodb"
+  db_table_name       = var.db_table_name
+  db_gsi_all_created  = "${var.db_table_name}-gsi-all-created"
+  db_gsi_all_priority = "${var.db_table_name}-gsi-all-priority"
+  db_lsi_created      = "${var.db_table_name}-lsi-created"
+  db_lsi_priority     = "${var.db_table_name}-lsi-priority"
 }

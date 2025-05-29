@@ -8,6 +8,7 @@ import (
 	m "github.com/savak1990/test-dynamodb-app/app/models"
 	"github.com/savak1990/test-dynamodb-app/app/service"
 	"github.com/savak1990/test-dynamodb-app/app/utils"
+	log "github.com/sirupsen/logrus"
 )
 
 type WishHandlerImpl struct {
@@ -35,6 +36,8 @@ func (h *WishHandlerImpl) CreateWish(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
+
+	log.WithContext(ctx).WithField("wish", wish).WithField("userId", userId).Debug("Handler: Creating wish")
 
 	wish.UserId = userId
 
@@ -71,6 +74,8 @@ func (h *WishHandlerImpl) GetWishByWishId(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	log.WithContext(ctx).WithField("userId", userId).WithField("wishId", wishId).Debug("Handler: Getting wish by wishId")
+
 	wish, err := h.wishService.GetWishByWishId(ctx, userId, wishId)
 	if err != nil {
 		utils.WriteJSONError(w, http.StatusInternalServerError, m.ErrorCodeInternalServer, "Failed to get wish: "+err.Error())
@@ -102,7 +107,21 @@ func (h *WishHandlerImpl) GetWishList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	wishes, err := h.wishService.GetWishList(ctx, userId)
+	sortBy := r.URL.Query().Get("sort_by")
+	if sortBy != "" && sortBy != "priority" && sortBy != "created" {
+		utils.WriteJSONError(w, http.StatusBadRequest, m.ErrorCodeBadRequest, "Invalid sort-by parameter: "+sortBy)
+		return
+	}
+
+	order := r.URL.Query().Get("order")
+	if order != "" && order != "asc" && order != "desc" {
+		utils.WriteJSONError(w, http.StatusBadRequest, m.ErrorCodeBadRequest, "Invalid order parameter: "+order)
+		return
+	}
+
+	log.WithField("userId", userId).WithField("sortBy", sortBy).WithField("order", order).Debug("Handler: Getting wish list")
+
+	wishes, err := h.wishService.GetWishList(ctx, userId, sortBy, order)
 	if err != nil {
 		utils.WriteJSONError(w, http.StatusInternalServerError, m.ErrorCodeInternalServer, "Failed to get wishes: "+err.Error())
 		return
@@ -144,6 +163,8 @@ func (h *WishHandlerImpl) UpdateWish(w http.ResponseWriter, r *http.Request) {
 	wish.UserId = userId
 	wish.WishId = wishId
 
+	log.WithField("wish", wish).WithField("userId", userId).WithField("wishId", wishId).Debug("Handler: Updating wish")
+
 	outputWish, err := h.wishService.UpdateWish(ctx, wish)
 	if err != nil {
 		utils.WriteJSONError(w, http.StatusInternalServerError, m.ErrorCodeInternalServer, "Failed to update wish: "+err.Error())
@@ -175,6 +196,8 @@ func (h *WishHandlerImpl) DeleteWish(w http.ResponseWriter, r *http.Request) {
 		utils.WriteJSONError(w, http.StatusBadRequest, m.ErrorCodeBadRequest, "wishId is required")
 		return
 	}
+
+	log.WithField("userId", userId).WithField("wishId", wishId).Debug("Handler: Deleting wish")
 
 	err := h.wishService.DeleteWish(ctx, userId, wishId)
 	if err != nil {

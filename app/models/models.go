@@ -9,16 +9,5 @@ type Wish struct {
 	Created  string `json:"created" dynamodbav:"created"`
 	Updated  string `json:"updated" dynamodbav:"updated"`
 	DueDate  string `json:"due_date" dynamodbav:"due_date"`
-}
-
-const (
-	ErrorCodeBadRequest     = "BadRequest"
-	ErrorCodeInternalServer = "InternalServerError"
-	ErrorCodeNotFound       = "NotFound"
-	ErrorCodeBadResponse    = "BadResponse"
-)
-
-type Error struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
+	All      string `json:"-" dynamodbav:"all"`
 }

@@ -14,7 +14,7 @@ Content-Type: application/json
     "title": "Learn Python",
     "wishId": "wish1",
     "content": "Work through Python tutorials and build a project.",
-    "priority": 1,
+    "priority": 4,
     "created": "2024-05-22T10:00:00Z",
     "updated": "2024-05-22T10:00:00Z",
     "due_date": "2024-06-01T00:00:00Z"
@@ -28,9 +28,9 @@ Content-Type: application/json
     "title": "Learn Go",
     "wishId": "wish2",
     "content": "Work through Go tutorials and build a project.",
-    "priority": 2,
-    "created": "2024-05-22T10:00:00Z",
-    "updated": "2024-05-22T10:00:00Z",
+    "priority": 1,
+    "created": "2024-05-23T10:00:00Z",
+    "updated": "2024-05-23T10:00:00Z",
     "due_date": "2024-06-01T00:00:00Z"
 }
 
@@ -43,8 +43,8 @@ Content-Type: application/json
     "wishId": "wish3",
     "content": "Work through Rust tutorials and build a project.",
     "priority": 3,
-    "created": "2024-05-22T10:00:00Z",
-    "updated": "2024-05-22T10:00:00Z",
+    "created": "2024-05-21T10:00:00Z",
+    "updated": "2024-05-21T10:00:00Z",
     "due_date": "2024-06-01T00:00:00Z"
 }
 
@@ -57,8 +57,8 @@ Content-Type: application/json
     "wishId": "wish3",
     "content": "Work through JavaScript tutorials and build a project.",
     "priority": 1,
-    "created": "2024-05-22T10:00:00Z",
-    "updated": "2024-05-22T10:00:00Z",
+    "created": "2024-05-20T10:00:00Z",
+    "updated": "2024-05-20T10:00:00Z",
     "due_date": "2024-06-01T00:00:00Z"
 }
 
@@ -85,6 +85,18 @@ GET {{baseUrl}}/wishes/user1/wish1
 
 ### Get non-existent wish for user1
 GET {{baseUrl}}/wishes/user1/wish999
+
+### Get all wishes sorted by priortiy
+GET {{baseUrl}}/wishes/all?sort_by=priority&order=asc
+
+### Get all wishes sorted by created date
+GET {{baseUrl}}/wishes/all?sort_by=created&order=desc
+
+### Get wishes for user1 sorted by created date in ascending order
+GET {{baseUrl}}/wishes/user1?sort_by=created&order=asc
+
+### Get wishes for user1 sorted by priority in descending order
+GET {{baseUrl}}/wishes/user1?sort_by=priority&order=desc
 
 ### Delete a wish for user1
 DELETE {{baseUrl}}/wishes/user1/wish1

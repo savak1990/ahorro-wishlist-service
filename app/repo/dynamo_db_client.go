@@ -30,4 +30,8 @@ type DynamoDbClient interface {
 	DeleteItem(ctx context.Context,
 		input *dynamodb.DeleteItemInput,
 		optFns ...func(*dynamodb.Options)) (*dynamodb.DeleteItemOutput, error)
+
+	Scan(ctx context.Context,
+		input *dynamodb.ScanInput,
+		optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error)
 }

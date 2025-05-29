@@ -86,3 +86,18 @@ func (m *MockDynamoDBClient) DeleteItem(ctx context.Context,
 	}
 	return out, args.Error(1)
 }
+
+func (m *MockDynamoDBClient) Scan(ctx context.Context,
+	input *dynamodb.ScanInput,
+	optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error) {
+
+	args := m.Called(ctx, input)
+	var out *dynamodb.ScanOutput
+	if v := args.Get(0); v != nil {
+		out = v.(*dynamodb.ScanOutput)
+	}
+	return out, args.Error(1)
+}
+
+// Ensure MockDynamoDBClient implements DynamoDbClient interface
+var _ DynamoDbClient = (*MockDynamoDBClient)(nil)

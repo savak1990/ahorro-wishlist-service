@@ -29,8 +29,8 @@ func (svc *MockWishService) GetWishByWishId(ctx context.Context, userId, wishId 
 	return retWish.(*m.Wish), args.Error(1)
 }
 
-func (svc *MockWishService) GetWishList(ctx context.Context, userId string) ([]m.Wish, error) {
-	args := svc.Called(ctx, userId)
+func (svc *MockWishService) GetWishList(ctx context.Context, userId, sortBy, order string) ([]m.Wish, error) {
+	args := svc.Called(ctx, userId, sortBy, order)
 	retWishes := args.Get(0)
 	if retWishes == nil {
 		return nil, args.Error(1)

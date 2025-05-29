@@ -8,6 +8,6 @@ type Wish struct {
 	Priority int    `json:"priority" dynamodbav:"priority"`
 	Created  string `json:"created" dynamodbav:"created"`
 	Updated  string `json:"updated" dynamodbav:"updated"`
-	DueDate  string `json:"due_date" dynamodbav:"due_date"`
+	Due      string `json:"due" dynamodbav:"due"`
 	All      string `json:"-" dynamodbav:"all"`
 }

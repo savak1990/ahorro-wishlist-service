@@ -15,8 +15,9 @@ resource "aws_dynamodb_table" "database" {
   billing_mode   = "PROVISIONED"
   read_capacity  = var.db_read_capacity_min
   write_capacity = var.db_write_capacity_min
-  hash_key       = "userId"
-  range_key      = "wishId"
+
+  hash_key  = "userId"
+  range_key = "wishId"
 
   attribute {
     name = "userId"
@@ -91,6 +92,11 @@ resource "aws_dynamodb_table" "database" {
     name            = local.db_lsi_due
     range_key       = "due"
     projection_type = "ALL"
+  }
+
+  ttl {
+    attribute_name = "expires"
+    enabled        = true
   }
 }
 

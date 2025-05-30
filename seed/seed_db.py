@@ -13,6 +13,11 @@ data_file = os.environ.get("SEED_DATA_FILE", "test_data.json")
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(table_name)
 
+# Safety check: do not run if table name contains dev, stable, or prod
+for forbidden in ["dev", "stable", "prod"]:
+    if forbidden in table_name.lower():
+        raise Exception(f"Refusing to run destructive operation on table '{table_name}' (contains '{forbidden}').")
+
 with open(data_file) as f:
     items = json.load(f)
 
@@ -35,10 +40,10 @@ for i in range(0, len(items), batch_size):
                     due_str = due.strftime('%Y-%m-%dT%H:%M:%SZ')
                     item["due"] = due_str
 
-                    # Expires is due + 30 days
-                    expires = due + timedelta(days=30)
-                    expires_str = expires.strftime('%Y-%m-%dT%H:%M:%SZ')
-                    item["expires"] = expires_str
+                    # Expires is due + 2 days
+                    expires = due + timedelta(days=2)
+                    expires_epoch = int(expires.timestamp())
+                    item["expires"] = expires_epoch
 
                     batch.put_item(Item=item)
             print(f"Batch {i // batch_size + 1} successfully written to DynamoDB.")
@@ -46,7 +51,7 @@ for i in range(0, len(items), batch_size):
         except ClientError as e:
             if e.response['Error']['Code'] == 'ProvisionedThroughputExceededException':
                 print("ProvisionedThroughputExceededException: Throughput exceeded, retrying in 2 seconds...")
-                time.sleep(2)
+                time.sleep(5)
             else:
                 raise
     time.sleep(2)

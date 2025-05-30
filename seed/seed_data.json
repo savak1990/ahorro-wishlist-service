@@ -1,0 +1,548 @@
+[
+    {
+        "userId": "user1",
+        "wishId": "wish1",
+        "title": "Buy a new laptop",
+        "content": "Looking for a lightweight laptop for travel and work.",
+        "priority": 8
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish2",
+        "title": "Vacation in Japan",
+        "content": "Plan a trip to Tokyo and Kyoto for cherry blossom season.",
+        "priority": 9
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish3",
+        "title": "Read 'Atomic Habits'",
+        "content": "Finish reading the book and take notes.",
+        "priority": 5
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish4",
+        "title": "Start a daily meditation habit",
+        "content": "Meditate for at least 10 minutes every morning.",
+        "priority": 7
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish5",
+        "title": "Run a half marathon",
+        "content": "Train and register for a local half marathon.",
+        "priority": 6
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish6",
+        "title": "Learn Go programming",
+        "content": "Complete an online Go programming course.",
+        "priority": 7
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish7",
+        "title": "Organize photo library",
+        "content": "Sort and back up all digital photos from the last 5 years.",
+        "priority": 4
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish8",
+        "title": "Buy a standing desk",
+        "content": "Research and purchase an ergonomic standing desk.",
+        "priority": 6
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish9",
+        "title": "Take a cooking class",
+        "content": "Sign up for a weekend Italian cooking class.",
+        "priority": 5
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish10",
+        "title": "Read 12 books this year",
+        "content": "Set a goal to read one book per month.",
+        "priority": 8
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish11",
+        "title": "Take a weekend hiking trip",
+        "content": "Explore a new national park trail.",
+        "priority": 7
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish12",
+        "title": "Enroll in a photography course",
+        "content": "Learn basics of DSLR photography.",
+        "priority": 6
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish13",
+        "title": "Declutter home office",
+        "content": "Organize desk, shelves, and paperwork.",
+        "priority": 5
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish14",
+        "title": "Try a new recipe every week",
+        "content": "Experiment with international cuisines.",
+        "priority": 6
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish15",
+        "title": "Complete a 30-day fitness challenge",
+        "content": "Follow a daily workout routine.",
+        "priority": 8
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish16",
+        "title": "Learn basic French",
+        "content": "Use an app to practice daily.",
+        "priority": 5
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish17",
+        "title": "Start a gratitude journal",
+        "content": "Write three things I'm grateful for each day.",
+        "priority": 7
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish18",
+        "title": "Take a digital detox weekend",
+        "content": "Unplug from all screens for two days.",
+        "priority": 6
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish19",
+        "title": "Attend a live concert",
+        "content": "See a favorite band perform.",
+        "priority": 8
+    },
+    {
+        "userId": "user1",
+        "wishId": "wish20",
+        "title": "Take a pottery class",
+        "content": "Learn to make a ceramic mug.",
+        "priority": 5
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish1",
+        "title": "Upgrade smartphone",
+        "content": "Buy the latest model with a better camera.",
+        "priority": 7
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish2",
+        "title": "Join a gym",
+        "content": "Find a local gym and start a fitness routine.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish3",
+        "title": "Learn Spanish",
+        "content": "Take an online Spanish course.",
+        "priority": 8
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish4",
+        "title": "Read 'Deep Work'",
+        "content": "Finish reading the book and apply its principles.",
+        "priority": 7
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish5",
+        "title": "Start meal prepping",
+        "content": "Prepare healthy meals for the week every Sunday.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish6",
+        "title": "Take a weekend hiking trip",
+        "content": "Explore a new trail in the nearby mountains.",
+        "priority": 8
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish7",
+        "title": "Organize digital files",
+        "content": "Sort and back up important documents and photos.",
+        "priority": 5
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish8",
+        "title": "Buy a standing desk",
+        "content": "Research and purchase an ergonomic standing desk.",
+        "priority": 7
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish9",
+        "title": "Take a cooking class",
+        "content": "Sign up for a weekend Thai cooking class.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish10",
+        "title": "Read 10 books this year",
+        "content": "Set a goal to read one book per month.",
+        "priority": 8
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish11",
+        "title": "Take a photography course",
+        "content": "Learn basics of smartphone photography.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish12",
+        "title": "Declutter apartment",
+        "content": "Organize closet and donate unused clothes.",
+        "priority": 5
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish13",
+        "title": "Try a new recipe every week",
+        "content": "Experiment with vegetarian dishes.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish14",
+        "title": "Complete a 30-day fitness challenge",
+        "content": "Follow a daily workout routine.",
+        "priority": 7
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish15",
+        "title": "Learn basic Italian",
+        "content": "Use an app to practice daily.",
+        "priority": 5
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish16",
+        "title": "Start a gratitude journal",
+        "content": "Write three things I'm grateful for each day.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish17",
+        "title": "Take a digital detox weekend",
+        "content": "Unplug from all screens for two days.",
+        "priority": 7
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish18",
+        "title": "Attend a live concert",
+        "content": "See a favorite band perform.",
+        "priority": 8
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish19",
+        "title": "Take a pottery class",
+        "content": "Learn to make a ceramic mug.",
+        "priority": 5
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish20",
+        "title": "Go camping with friends",
+        "content": "Plan a weekend camping trip.",
+        "priority": 7
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish21",
+        "title": "Take a painting workshop",
+        "content": "Try watercolor landscape painting.",
+        "priority": 4
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish22",
+        "title": "Organize a family reunion",
+        "content": "Host a barbecue for extended family.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish23",
+        "title": "Start a podcast",
+        "content": "Record and publish the first episode.",
+        "priority": 8
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish24",
+        "title": "Take a weekend road trip",
+        "content": "Visit a nearby city and explore.",
+        "priority": 7
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish25",
+        "title": "Learn to bake bread",
+        "content": "Try making sourdough from scratch.",
+        "priority": 5
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish26",
+        "title": "Volunteer at a local shelter",
+        "content": "Help with weekend events.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish27",
+        "title": "Take a creative writing class",
+        "content": "Write a short story for submission.",
+        "priority": 7
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish28",
+        "title": "Host a dinner party",
+        "content": "Cook a three-course meal for friends.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish29",
+        "title": "Take a dance class",
+        "content": "Learn basic salsa moves.",
+        "priority": 5
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish30",
+        "title": "Read a classic novel",
+        "content": "Finish reading '1984' by George Orwell.",
+        "priority": 4
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish31",
+        "title": "Try a new sport",
+        "content": "Join a beginner badminton class.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish32",
+        "title": "Start a YouTube channel",
+        "content": "Upload the first video about tech reviews.",
+        "priority": 7
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish33",
+        "title": "Take a self-defense class",
+        "content": "Learn basic techniques for safety.",
+        "priority": 8
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish34",
+        "title": "Go kayaking",
+        "content": "Spend a day kayaking on the river.",
+        "priority": 5
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish35",
+        "title": "Attend a cooking workshop",
+        "content": "Learn to make homemade pasta.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish36",
+        "title": "Write a letter to a friend",
+        "content": "Reconnect with an old friend by mail.",
+        "priority": 4
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish37",
+        "title": "Take a mindfulness course",
+        "content": "Practice mindfulness meditation daily.",
+        "priority": 7
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish38",
+        "title": "Go to a museum",
+        "content": "Visit the new science exhibit downtown.",
+        "priority": 5
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish39",
+        "title": "Try indoor rock climbing",
+        "content": "Visit a local climbing gym.",
+        "priority": 6
+    },
+    {
+        "userId": "user2",
+        "wishId": "wish40",
+        "title": "Take a language exchange class",
+        "content": "Practice French with a native speaker.",
+        "priority": 7
+    },
+    {
+        "userId": "user3",
+        "wishId": "wish1",
+        "title": "Buy a mountain bike",
+        "content": "Get a bike for weekend trail rides.",
+        "priority": 6
+    },
+    {
+        "userId": "user4",
+        "wishId": "wish1",
+        "title": "Attend a pottery workshop",
+        "content": "Sign up for a local pottery class.",
+        "priority": 5
+    },
+    {
+        "userId": "user5",
+        "wishId": "wish1",
+        "title": "Start a blog",
+        "content": "Write about travel experiences.",
+        "priority": 4
+    },
+    {
+        "userId": "user6",
+        "wishId": "wish1",
+        "title": "Plant a vegetable garden",
+        "content": "Grow tomatoes, cucumbers, and herbs.",
+        "priority": 6
+    },
+    {
+        "userId": "user7",
+        "wishId": "wish1",
+        "title": "Take a photography course",
+        "content": "Improve landscape photography skills.",
+        "priority": 7
+    },
+    {
+        "userId": "user8",
+        "wishId": "wish1",
+        "title": "Volunteer at animal shelter",
+        "content": "Help walk dogs on weekends.",
+        "priority": 5
+    },
+    {
+        "userId": "user9",
+        "wishId": "wish1",
+        "title": "Take a road trip",
+        "content": "Drive along the coast with friends.",
+        "priority": 8
+    },
+    {
+        "userId": "user10",
+        "wishId": "wish1",
+        "title": "Learn to play guitar",
+        "content": "Practice chords and favorite songs.",
+        "priority": 6
+    },
+    {
+        "userId": "user11",
+        "wishId": "wish1",
+        "title": "Bake sourdough bread",
+        "content": "Try a new recipe every weekend.",
+        "priority": 4
+    },
+    {
+        "userId": "user12",
+        "wishId": "wish1",
+        "title": "Write a short story",
+        "content": "Submit to a local writing contest.",
+        "priority": 7
+    },
+    {
+        "userId": "user13",
+        "wishId": "wish1",
+        "title": "Go camping",
+        "content": "Spend a weekend in the mountains.",
+        "priority": 5
+    },
+    {
+        "userId": "user14",
+        "wishId": "wish1",
+        "title": "Paint a landscape",
+        "content": "Create a painting for the living room.",
+        "priority": 3
+    },
+    {
+        "userId": "user15",
+        "wishId": "wish1",
+        "title": "Try rock climbing",
+        "content": "Visit an indoor climbing gym.",
+        "priority": 6
+    },
+    {
+        "userId": "user16",
+        "wishId": "wish1",
+        "title": "Host a game night",
+        "content": "Invite friends for board games.",
+        "priority": 4
+    },
+    {
+        "userId": "user17",
+        "wishId": "wish1",
+        "title": "Take a yoga class",
+        "content": "Try a beginner yoga session.",
+        "priority": 5
+    },
+    {
+        "userId": "user18",
+        "wishId": "wish1",
+        "title": "Go to a jazz concert",
+        "content": "Attend a live jazz performance downtown.",
+        "priority": 7
+    },
+    {
+        "userId": "user19",
+        "wishId": "wish1",
+        "title": "Learn to swim",
+        "content": "Take swimming lessons at the community pool.",
+        "priority": 8
+    },
+    {
+        "userId": "user20",
+        "wishId": "wish1",
+        "title": "Visit a national park",
+        "content": "Plan a weekend trip to Yellowstone.",
+        "priority": 9
+    }
+]

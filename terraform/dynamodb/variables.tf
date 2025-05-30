@@ -6,7 +6,7 @@ variable "db_table_name" {
 variable "db_read_capacity_min" {
   description = "The read capacity for the DynamoDB table"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "db_read_capacity_max" {
@@ -18,7 +18,7 @@ variable "db_read_capacity_max" {
 variable "db_write_capacity_min" {
   description = "The write capacity for the DynamoDB table"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "db_write_capacity_max" {

@@ -6,8 +6,8 @@ GET {{baseUrl}}/info
 ### Health Check
 GET {{baseUrl}}/health
 
-### Create a new wish for user1
-POST {{baseUrl}}/wishes/user1
+### Create a new wish for user50
+POST {{baseUrl}}/wishes/user50
 Content-Type: application/json
 
 {
@@ -18,8 +18,8 @@ Content-Type: application/json
     "due": "2024-06-01T00:00:00Z"
 }
 
-### Create another wish for user1
-POST {{baseUrl}}/wishes/user1
+### Create another wish for user50
+POST {{baseUrl}}/wishes/user50
 Content-Type: application/json
 
 {
@@ -30,8 +30,8 @@ Content-Type: application/json
     "due": "2024-06-01T00:00:00Z"
 }
 
-### Create a wish 3 for user1
-POST {{baseUrl}}/wishes/user1
+### Create a wish 3 for user50
+POST {{baseUrl}}/wishes/user50
 Content-Type: application/json
 
 {
@@ -42,8 +42,8 @@ Content-Type: application/json
     "due": "2024-06-01T00:00:00Z"
 }
 
-### Create a wish for user2
-POST {{baseUrl}}/wishes/user2
+### Create a wish for user51
+POST {{baseUrl}}/wishes/user51
 Content-Type: application/json
 
 {
@@ -67,16 +67,16 @@ Content-Type: application/json
 }
 
 ### Get all wishes for user1
-GET {{baseUrl}}/wishes/user1
+GET {{baseUrl}}/wishes/user50
 
 ### Get all wishes for user2
-GET {{baseUrl}}/wishes/user2
+GET {{baseUrl}}/wishes/user51
 
 ### Get a specific wish for user1
-GET {{baseUrl}}/wishes/user1/wish1
+GET {{baseUrl}}/wishes/user50/wish1
 
-### Get non-existent wish for user1
-GET {{baseUrl}}/wishes/user1/wish999
+### Get non-existent wish for user50
+GET {{baseUrl}}/wishes/user50/wish999
 
 ### Get all wishes sorted by priortiy
 GET {{baseUrl}}/wishes/all?sort_by=priority&order=asc

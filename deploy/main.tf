@@ -11,7 +11,7 @@ provider "aws" {
   }
 }
 
-module "service_db" {
-  source        = "../terraform/dynamodb"
+module "ahorro_wishlist_service" {
+  source        = "../terraform"
   db_table_name = var.db_table_name
 }

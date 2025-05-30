@@ -41,6 +41,9 @@ functional-test:
 	DYNAMODB_TABLE=$(DB_TABLE_TEST_NAME) BINARY=$(BINARY) pytest ../test && \
 	cd deploy && terraform destroy -auto-approve -var="db_table_name=$(DB_TABLE_TEST_NAME)"
 
+plan:
+	cd deploy && terraform init && terraform plan -var="db_table_name=$(DB_TABLE_NAME)"
+
 deploy:
 	cd deploy && terraform init && terraform apply -auto-approve -var="db_table_name=$(DB_TABLE_NAME)"
 

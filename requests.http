@@ -87,8 +87,20 @@ GET {{baseUrl}}/wishes/all?sort_by=created&order=desc
 ### Get all wishes sorted by due date
 GET {{baseUrl}}/wishes/all?sort_by=due&order=asc
 
+### Get all wishes paginated (page 1, size 5)
+GET {{baseUrl}}/wishes/all?sort_by=due&order=desc&limit=5
+
+### Get all wishes paginated (page 2, size 5)
+GET {{baseUrl}}/wishes/all?sort_by=due&order=desc&limit=5&next_token=eyJkdWUiOnsiUyI6IjIwMjUtMDYtMjlUMTE6MTI6MzlaIn0sInVzZXJJZCI6eyJTIjoidXNlcjE2In0sIndpc2hJZCI6eyJTIjoid2lzaDEifSwiYWxsIjp7IlMiOiJhbGwifX0=
+
 ### Get wishes for user1 sorted by created date in ascending order
 GET {{baseUrl}}/wishes/user1?sort_by=created&order=asc
+
+### Get 5 first wishes for user1 sorted by created date in descending order
+GET {{baseUrl}}/wishes/user1?sort_by=created&order=desc&limit=5
+
+### Get wishes for user1 with pagination (page 2, size 5)
+GET {{baseUrl}}/wishes/user1?sort_by=created&order=desc&limit=5&next_token=eyJ1c2VySWQiOnsiUyI6InVzZXIxIn0sIndpc2hJZCI6eyJTIjoid2lzaDUifSwiY3JlYXRlZCI6eyJTIjoiMjAyNS0wNS0zMVQxMToxMjozNFoifX0=
 
 ### Get wishes for user1 sorted by priority in descending order
 GET {{baseUrl}}/wishes/user1?sort_by=priority&order=desc

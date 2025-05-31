@@ -29,13 +29,13 @@ func (svc *MockWishService) GetWishByWishId(ctx context.Context, userId, wishId 
 	return retWish.(*m.Wish), args.Error(1)
 }
 
-func (svc *MockWishService) GetWishList(ctx context.Context, userId, sortBy, order string) ([]m.Wish, error) {
-	args := svc.Called(ctx, userId, sortBy, order)
+func (svc *MockWishService) GetWishList(ctx context.Context, userId, sortBy, order string, limit int32, nextToken string) ([]m.Wish, string, error) {
+	args := svc.Called(ctx, userId, sortBy, order, limit, nextToken)
 	retWishes := args.Get(0)
 	if retWishes == nil {
-		return nil, args.Error(1)
+		return nil, "", args.Error(1)
 	}
-	return retWishes.([]m.Wish), args.Error(1)
+	return retWishes.([]m.Wish), args.String(1), args.Error(2)
 }
 
 func (svc *MockWishService) UpdateWish(ctx context.Context, wish m.Wish) (*m.Wish, error) {

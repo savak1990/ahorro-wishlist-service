@@ -12,3 +12,10 @@ type Wish struct {
 	All      string `json:"-" dynamodbav:"all"`
 	Version  int    `json:"-" dynamodbav:"version"`
 }
+
+const (
+	ErrorCodeBadRequest     = "BadRequest"
+	ErrorCodeInternalServer = "InternalServerError"
+	ErrorCodeNotFound       = "NotFound"
+	ErrorCodeBadResponse    = "BadResponse"
+)

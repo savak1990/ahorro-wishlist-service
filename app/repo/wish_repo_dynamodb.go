@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"github.com/aws/aws-sdk-go/aws"
 	m "github.com/savak1990/test-dynamodb-app/app/models"
 	log "github.com/sirupsen/logrus"
 )
@@ -84,7 +84,7 @@ func (r *DynamoDbWishRepository) GetWishByWishId(ctx context.Context, userId str
 	return &wish, nil
 }
 
-func (r *DynamoDbWishRepository) GetUserWishes(ctx context.Context, userId string, lsi string, scanForward bool) ([]m.Wish, error) {
+func (r *DynamoDbWishRepository) GetUserWishes(ctx context.Context, userId string, lsi string, scanForward bool, limit int32, nextToken string) ([]m.Wish, string, error) {
 
 	log.WithField("userId", userId).WithField("scanForward", scanForward).Debug("Repo: Getting wish list")
 
@@ -93,27 +93,91 @@ func (r *DynamoDbWishRepository) GetUserWishes(ctx context.Context, userId strin
 		sortIndex = aws.String(lsi)
 	}
 
-	result, err := r.client.Query(ctx, &dynamodb.QueryInput{
+	var inputLimit *int32
+	if limit > 0 {
+		inputLimit = aws.Int32(limit)
+	}
+
+	startKey, err := decodeLastEvaluatedKey(nextToken)
+	if err != nil {
+		return nil, "", err
+	}
+
+	queryInput := &dynamodb.QueryInput{
 		TableName:              &r.tableName,
 		IndexName:              sortIndex,
 		ScanIndexForward:       aws.Bool(scanForward),
+		Limit:                  inputLimit,
+		ExclusiveStartKey:      startKey,
 		KeyConditionExpression: aws.String("userId = :userId"),
 		ExpressionAttributeValues: map[string]types.AttributeValue{
 			":userId": &types.AttributeValueMemberS{Value: userId},
 		},
+	}
+
+	result, err := r.client.Query(ctx, queryInput)
+	if err != nil {
+		return nil, "", err
+	}
+
+	var wishes []m.Wish
+	if err = dynamoDbUnmarshalListOfMapsFunc(result.Items, &wishes); err != nil {
+		return nil, "", err
+	}
+
+	nextTokenStr, err := encodeLastEvaluatedKey(result.LastEvaluatedKey)
+	if err != nil {
+		return nil, "", err
+	}
+
+	return wishes, nextTokenStr, nil
+}
+
+func (r *DynamoDbWishRepository) GetAllWishes(ctx context.Context, gsi string, scanForward bool, limit int32, nextToken string) ([]m.Wish, string, error) {
+
+	log.WithField("scanForward", scanForward).Debug("Repo: Getting all wishes sorted by priority")
+
+	startKey, err := decodeLastEvaluatedKey(nextToken)
+	if err != nil {
+		return nil, "", err
+	}
+
+	var inputLimit *int32
+	if limit > 0 {
+		inputLimit = aws.Int32(limit)
+	}
+
+	result, err := r.client.Query(ctx, &dynamodb.QueryInput{
+		TableName:              &r.tableName,
+		IndexName:              aws.String(gsi),
+		ScanIndexForward:       aws.Bool(scanForward),
+		Limit:                  inputLimit,
+		ExclusiveStartKey:      startKey,
+		KeyConditionExpression: aws.String("#all = :all"),
+		ExpressionAttributeNames: map[string]string{
+			"#all": "all",
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":all": &types.AttributeValueMemberS{Value: "all"},
+		},
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	var wishes []m.Wish
 	err = dynamoDbUnmarshalListOfMapsFunc(result.Items, &wishes)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	return wishes, nil
+	nextTokenStr, err := encodeLastEvaluatedKey(result.LastEvaluatedKey)
+	if err != nil {
+		return nil, "", err
+	}
+
+	return wishes, nextTokenStr, nil
 }
 
 func (r *DynamoDbWishRepository) UpdateWish(ctx context.Context, wish m.Wish) (*m.Wish, error) {
@@ -167,90 +231,6 @@ func (r *DynamoDbWishRepository) DeleteWish(ctx context.Context, userId string, 
 	})
 
 	return err
-}
-
-func (r *DynamoDbWishRepository) GetAllWishes(ctx context.Context, gsi string, scanForward bool) ([]m.Wish, error) {
-
-	log.WithField("scanForward", scanForward).Debug("Repo: Getting all wishes sorted by priority")
-
-	result, err := r.client.Query(ctx, &dynamodb.QueryInput{
-		TableName:              &r.tableName,
-		IndexName:              aws.String(gsi),
-		ScanIndexForward:       aws.Bool(scanForward),
-		KeyConditionExpression: aws.String("#all = :all"),
-		ExpressionAttributeNames: map[string]string{
-			"#all": "all",
-		},
-		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":all": &types.AttributeValueMemberS{Value: "all"},
-		},
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	var wishes []m.Wish
-	err = dynamoDbUnmarshalListOfMapsFunc(result.Items, &wishes)
-	if err != nil {
-		return nil, err
-	}
-
-	return wishes, nil
-}
-
-func (r *DynamoDbWishRepository) GetWishesSortedByPriority(ctx context.Context, userId string, scanForward bool) ([]m.Wish, error) {
-
-	log.WithField("userId", userId).WithField("scanForward", scanForward).Debug("Repo: Getting wishes sorted by priority")
-
-	result, err := r.client.Query(ctx, &dynamodb.QueryInput{
-		TableName:              &r.tableName,
-		IndexName:              aws.String(r.lsiPriorityIndexName()),
-		ScanIndexForward:       aws.Bool(scanForward),
-		KeyConditionExpression: aws.String("userId = :userId"),
-		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":userId": &types.AttributeValueMemberS{Value: userId},
-		},
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	var wishes []m.Wish
-	err = dynamoDbUnmarshalListOfMapsFunc(result.Items, &wishes)
-	if err != nil {
-		return nil, err
-	}
-
-	return wishes, nil
-}
-
-func (r *DynamoDbWishRepository) GetWishesSortedByCreatedAt(ctx context.Context, userId string, scanForward bool) ([]m.Wish, error) {
-
-	log.WithField("userId", userId).WithField("scanForward", scanForward).Debug("Repo: Getting wishes sorted by created at")
-
-	result, err := r.client.Query(ctx, &dynamodb.QueryInput{
-		TableName:              &r.tableName,
-		IndexName:              aws.String(r.lsiCreatedIndexName()),
-		ScanIndexForward:       aws.Bool(scanForward),
-		KeyConditionExpression: aws.String("userId = :userId"),
-		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":userId": &types.AttributeValueMemberS{Value: userId},
-		},
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	var wishes []m.Wish
-	err = dynamoDbUnmarshalListOfMapsFunc(result.Items, &wishes)
-	if err != nil {
-		return nil, err
-	}
-
-	return wishes, nil
 }
 
 func (r *DynamoDbWishRepository) GetGlobalSortIndexName(sortBy string) string {

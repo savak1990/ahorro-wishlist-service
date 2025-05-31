@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -10,17 +9,29 @@ import (
 	"github.com/savak1990/test-dynamodb-app/app/handler"
 	"github.com/savak1990/test-dynamodb-app/app/repo"
 	"github.com/savak1990/test-dynamodb-app/app/service"
+
+	log "github.com/sirupsen/logrus"
 )
+
+func init() {
+	log.SetFormatter(&log.TextFormatter{
+		FullTimestamp: true,
+	})
+	log.SetLevel(log.InfoLevel)
+}
 
 func main() {
 	appCfg := config.LoadConfig()
-	log.Printf("Loaded config: region=%s, profile=%s\n", appCfg.AWSRegion, appCfg.AWSProfile)
+	log.WithFields(log.Fields{
+		"region":  appCfg.AWSRegion,
+		"profile": appCfg.AWSProfile,
+	}).Info("Loaded config")
 
 	awsCfg := aws.LoadAWSConfig(appCfg.AWSRegion, appCfg.AWSProfile)
-	log.Printf("AWS Debug Info: Region=%s\n", awsCfg.Region)
+	log.WithField("region", awsCfg.Region).Info("AWS Debug Info")
 
 	dbClient := aws.GetDynamoDbClient(awsCfg)
-	log.Printf("DynamoDB client info: EndpointResolver=%T\n", dbClient.Options().BaseEndpoint)
+	log.WithField("endpointResolver", dbClient.Options().BaseEndpoint).Info("DynamoDB client info")
 
 	wishRepo := repo.NewDynamoDbWishRepository(dbClient, appCfg.TableName)
 	wishService := service.NewWishService(wishRepo)
@@ -40,8 +51,8 @@ func main() {
 	router.HandleFunc("/health", commonHandler.HandleHealth).Methods("GET")
 	router.HandleFunc("/info", commonHandler.HandleInfo).Methods("GET")
 
-	log.Printf("Starting server on port 8080")
+	log.Info("Starting server on port 8080")
 	if err := http.ListenAndServe(":8080", router); err != nil {
-		log.Fatalf("Could not start server: %s\n", err)
+		log.Fatalf("Could not start server: %s", err)
 	}
 }

@@ -83,9 +83,9 @@ func (w *WishServiceImpl) GetWishByWishId(ctx context.Context, userId, wishId st
 	return w.wishRepo.GetWishByWishId(ctx, userId, wishId)
 }
 
-func (w *WishServiceImpl) GetWishList(ctx context.Context, userId, sortBy, order string) ([]m.Wish, error) {
+func (w *WishServiceImpl) GetWishList(ctx context.Context, userId, sortBy, order string, limit int32, nextToken string) ([]m.Wish, string, error) {
 
-	log.WithField("userId", userId).WithField("sortBy", sortBy).WithField("order", order).Debug("Service: Getting wish list")
+	log.WithField("userId", userId).WithField("sortBy", sortBy).WithField("order", order).WithField("limit", limit).Debug("Service: Getting wish list")
 
 	scanForward := true
 	if order == "desc" {
@@ -93,9 +93,9 @@ func (w *WishServiceImpl) GetWishList(ctx context.Context, userId, sortBy, order
 	}
 
 	if userId == "all" {
-		return w.wishRepo.GetAllWishes(ctx, w.wishRepo.GetGlobalSortIndexName(sortBy), scanForward)
+		return w.wishRepo.GetAllWishes(ctx, w.wishRepo.GetGlobalSortIndexName(sortBy), scanForward, limit, nextToken)
 	} else {
-		return w.wishRepo.GetUserWishes(ctx, userId, w.wishRepo.GetLocalSortIndexName(sortBy), scanForward)
+		return w.wishRepo.GetUserWishes(ctx, userId, w.wishRepo.GetLocalSortIndexName(sortBy), scanForward, limit, nextToken)
 	}
 }
 

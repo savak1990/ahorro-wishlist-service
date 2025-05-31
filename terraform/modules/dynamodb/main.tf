@@ -98,6 +98,10 @@ resource "aws_dynamodb_table" "database" {
     attribute_name = "expires"
     enabled        = true
   }
+
+  point_in_time_recovery {
+    enabled = true
+  }
 }
 
 module "db_read_autoscaling" {

@@ -19,11 +19,6 @@ func encodeLastEvaluatedKey(key map[string]types.AttributeValue) (string, error)
 		return "", nil
 	}
 
-	log.WithField("lastEvaluatedKey", key).Infof("%+v", key)
-	for k, v := range key {
-		log.Infof("%s: %#v", k, v)
-	}
-
 	b, err := dynamoDbMarshalMapJsonFunc(key)
 	if err != nil {
 		return "", err

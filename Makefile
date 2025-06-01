@@ -63,7 +63,8 @@ functional-test:
 
 plan:
 	cd deploy && \
-	terraform init && \
+	terraform init \
+		-backend-config="key=dev/$(SERVICE_NAME)/$(INSTANCE_NAME)/terraform.tfstate" && \
 	terraform plan \
 		-var="app_name=$(APP_NAME)" \
 		-var="service_name=$(SERVICE_NAME)" \
@@ -72,7 +73,8 @@ plan:
 
 deploy:
 	cd deploy && \
-	terraform init && \
+	terraform init \
+		-backend-config="key=dev/$(SERVICE_NAME)/$(INSTANCE_NAME)/terraform.tfstate" && \
 	terraform apply -auto-approve \
 		-var="app_name=$(APP_NAME)" \
 		-var="service_name=$(SERVICE_NAME)" \
@@ -81,7 +83,8 @@ deploy:
 
 deploy:
 	cd deploy && \
-	terraform init && \
+	terraform init \
+		-backend-config="key=dev/$(SERVICE_NAME)/$(INSTANCE_NAME)/terraform.tfstate" && \
 	terraform apply -auto-approve \
 		-var="app_name=$(APP_NAME)" \
 		-var="service_name=$(SERVICE_NAME)" \
@@ -90,6 +93,8 @@ deploy:
 
 undeploy:
 	cd deploy && \
+	terraform init \
+		-backend-config="key=dev/$(SERVICE_NAME)/$(INSTANCE_NAME)/terraform.tfstate" && \
 	terraform destroy -auto-approve \
 		-var="app_name=$(APP_NAME)" \
 		-var="service_name=$(SERVICE_NAME)" \

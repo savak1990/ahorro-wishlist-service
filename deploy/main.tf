@@ -18,3 +18,13 @@ module "ahorro_wishlist_service" {
   env                  = var.env
   dbstream_handler_zip = var.dbstream_handler_zip
 }
+
+terraform {
+  backend "s3" {
+    bucket = "ahorro-app-terraform-state"
+    # key is set in the makefile and passed as a backend-config variable
+    region         = "us-east-1"
+    dynamodb_table = "ahorro-app-state-lock"
+    encrypt        = true
+  }
+}

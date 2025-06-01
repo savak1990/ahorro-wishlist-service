@@ -97,11 +97,4 @@ resource "aws_dynamodb_table" "database" {
   point_in_time_recovery {
     enabled = true
   }
-
-  # dynamic "replica" {
-  #   for_each = var.db_replica_regions
-  #   content {
-  #     region_name = replica.value
-  #   }
-  # }
 }

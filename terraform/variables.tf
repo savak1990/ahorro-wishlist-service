@@ -13,10 +13,10 @@ variable "env" {
   type        = string
 }
 
-variable "db_replica_regions" {
-  description = "List of regions for DynamoDB global tables"
-  type        = list(string)
-  default     = []
+variable "db_replica_table_arn" {
+  description = "The ARN of the DynamoDB replica table"
+  type        = string
+  default     = null
 }
 
 variable "dbstream_handler_zip" {

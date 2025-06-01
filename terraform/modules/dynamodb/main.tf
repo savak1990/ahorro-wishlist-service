@@ -98,10 +98,10 @@ resource "aws_dynamodb_table" "database" {
     enabled = true
   }
 
-  dynamic "replica" {
-    for_each = var.db_replica_regions
-    content {
-      region_name = replica.value
-    }
-  }
+  # dynamic "replica" {
+  #   for_each = var.db_replica_regions
+  #   content {
+  #     region_name = replica.value
+  #   }
+  # }
 }

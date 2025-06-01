@@ -12,10 +12,9 @@ provider "aws" {
 }
 
 module "ahorro_wishlist_service" {
-  source        = "../terraform"
-  db_table_name = var.db_table_name
-  db_replica_regions = [
-    "us-west-2",
-    "eu-central-1"
-  ]
+  source               = "../terraform"
+  app_name             = var.app_name
+  service_name         = var.service_name
+  env                  = var.env
+  dbstream_handler_zip = var.dbstream_handler_zip
 }

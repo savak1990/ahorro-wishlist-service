@@ -49,5 +49,4 @@ htmlcov/
 
 # Terraform state
 .terraform/
-.terraform.lock.hcl
 terraform.tfstate*

@@ -11,10 +11,11 @@ locals {
 }
 
 resource "aws_dynamodb_table" "database" {
-  name           = var.db_table_name
-  billing_mode   = "PROVISIONED"
-  read_capacity  = var.db_read_capacity_min
-  write_capacity = var.db_write_capacity_min
+  name         = var.db_table_name
+  billing_mode = "PAY_PER_REQUEST"
+
+  stream_enabled   = true
+  stream_view_type = "NEW_AND_OLD_IMAGES"
 
   hash_key  = "userId"
   range_key = "wishId"
@@ -54,8 +55,6 @@ resource "aws_dynamodb_table" "database" {
     hash_key        = "all"
     range_key       = "created"
     projection_type = "ALL"
-    read_capacity   = var.db_read_capacity_min
-    write_capacity  = var.db_write_capacity_min
   }
 
   global_secondary_index {
@@ -63,8 +62,6 @@ resource "aws_dynamodb_table" "database" {
     hash_key        = "all"
     range_key       = "priority"
     projection_type = "ALL"
-    read_capacity   = var.db_read_capacity_min
-    write_capacity  = var.db_write_capacity_min
   }
 
   global_secondary_index {
@@ -72,8 +69,6 @@ resource "aws_dynamodb_table" "database" {
     hash_key        = "all"
     range_key       = "due"
     projection_type = "ALL"
-    read_capacity   = var.db_read_capacity_min
-    write_capacity  = var.db_write_capacity_min
   }
 
   local_secondary_index {
@@ -102,84 +97,11 @@ resource "aws_dynamodb_table" "database" {
   point_in_time_recovery {
     enabled = true
   }
-}
 
-module "db_read_autoscaling" {
-  source = "../autoscaling"
-
-  service_namespace      = "dynamodb"
-  resource_id            = "table/${aws_dynamodb_table.database.name}"
-  scalable_dimension     = "dynamodb:table:ReadCapacityUnits"
-  min_capacity           = var.db_read_capacity_min
-  max_capacity           = var.db_read_capacity_max
-  policy_name            = "ReadCapacityPolicy"
-  policy_type            = "TargetTrackingScaling"
-  target_value           = 70.0
-  scale_in_cooldown      = 60
-  scale_out_cooldown     = 60
-  predefined_metric_type = "DynamoDBReadCapacityUtilization"
-}
-
-module "db_write_autoscaling" {
-  source = "../autoscaling"
-
-  service_namespace      = "dynamodb"
-  resource_id            = "table/${aws_dynamodb_table.database.name}"
-  scalable_dimension     = "dynamodb:table:WriteCapacityUnits"
-  min_capacity           = var.db_write_capacity_min
-  max_capacity           = var.db_write_capacity_max
-  policy_name            = "WriteCapacityPolicy"
-  policy_type            = "TargetTrackingScaling"
-  target_value           = 70.0
-  scale_in_cooldown      = 60
-  scale_out_cooldown     = 60
-  predefined_metric_type = "DynamoDBWriteCapacityUtilization"
-}
-
-module "gsi_created_read_autoscaling" {
-  source = "../autoscaling"
-
-  service_namespace      = "dynamodb"
-  resource_id            = "table/${aws_dynamodb_table.database.name}/index/${local.db_gsi_all_created}"
-  scalable_dimension     = "dynamodb:index:ReadCapacityUnits"
-  min_capacity           = var.db_read_capacity_min
-  max_capacity           = var.db_read_capacity_max
-  policy_name            = "GSICreatedReadCapacityPolicy"
-  policy_type            = "TargetTrackingScaling"
-  target_value           = 70.0
-  scale_in_cooldown      = 60
-  scale_out_cooldown     = 60
-  predefined_metric_type = "DynamoDBReadCapacityUtilization"
-}
-
-module "gsi_priority_read_autoscaling" {
-  source = "../autoscaling"
-
-  service_namespace      = "dynamodb"
-  resource_id            = "table/${aws_dynamodb_table.database.name}/index/${local.db_gsi_all_priority}"
-  scalable_dimension     = "dynamodb:index:ReadCapacityUnits"
-  min_capacity           = var.db_read_capacity_min
-  max_capacity           = var.db_read_capacity_max
-  policy_name            = "GSIPriorityReadCapacityPolicy"
-  policy_type            = "TargetTrackingScaling"
-  target_value           = 70.0
-  scale_in_cooldown      = 60
-  scale_out_cooldown     = 60
-  predefined_metric_type = "DynamoDBReadCapacityUtilization"
-}
-
-module "gsi_due_read_autoscaling" {
-  source = "../autoscaling"
-
-  service_namespace      = "dynamodb"
-  resource_id            = "table/${aws_dynamodb_table.database.name}/index/${local.db_gsi_all_due}"
-  scalable_dimension     = "dynamodb:index:ReadCapacityUnits"
-  min_capacity           = var.db_read_capacity_min
-  max_capacity           = var.db_read_capacity_max
-  policy_name            = "GSIDueReadCapacityPolicy"
-  policy_type            = "TargetTrackingScaling"
-  target_value           = 70.0
-  scale_in_cooldown      = 60
-  scale_out_cooldown     = 60
-  predefined_metric_type = "DynamoDBReadCapacityUtilization"
+  dynamic "replica" {
+    for_each = var.db_replica_regions
+    content {
+      region_name = replica.value
+    }
+  }
 }

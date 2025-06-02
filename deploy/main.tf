@@ -30,27 +30,32 @@ module "ahorro_wishlist_service_primary" {
   source = "../terraform"
 
   providers = {
-    aws = aws.primary
+    aws         = aws.primary
+    aws.primary = aws.primary
   }
 
   app_name             = var.app_name
   service_name         = var.service_name
   env                  = var.env
   dbstream_handler_zip = var.dbstream_handler_zip
+  is_primary           = true
 }
 
 module "ahorro_wishlist_service_secondary_1" {
   source = "../terraform"
 
   providers = {
-    aws = aws.secondary-1
+    aws         = aws.secondary-1
+    aws.primary = aws.primary
   }
 
   app_name             = var.app_name
   service_name         = var.service_name
   env                  = var.env
   dbstream_handler_zip = var.dbstream_handler_zip
-  db_replica_table_arn = module.ahorro_wishlist_service_primary.db_table_arn
+  is_primary           = false
+
+  depends_on = [module.ahorro_wishlist_service_primary]
 }
 
 terraform {

@@ -1,15 +1,15 @@
 output "db_table_name" {
-  value = var.db_replica_table_arn != null ? module.database_replica[0].db_table_name : module.database[0].db_table_name
+  value = local.db_table_name
 }
 
 output "db_table_arn" {
-  value = var.db_replica_table_arn != null ? module.database_replica[0].db_table_arn : module.database[0].db_table_arn
+  value = length(module.database) > 0 ? module.database[0].db_table_arn : aws_dynamodb_table_replica.replica[0].arn
 }
 
-output "lambda_function_name" {
+output "lambda_dbstream_function_name" {
   value = module.dbstream_handler_lambda.lambda_function_name
 }
 
-output "lambda_function_arn" {
+output "lambda_dbstream_function_arn" {
   value = module.dbstream_handler_lambda.lambda_function_arn
 }

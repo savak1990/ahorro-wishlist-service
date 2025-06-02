@@ -13,3 +13,9 @@ variable "lambda_environment_variables" {
   type        = map(string)
   default     = {}
 }
+
+variable "is_primary" {
+  description = "Create global resoures only if this is the primary module"
+  type        = bool
+  default     = false
+}

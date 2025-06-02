@@ -13,10 +13,10 @@ variable "env" {
   type        = string
 }
 
-variable "db_replica_table_arn" {
-  description = "The ARN of the DynamoDB replica table"
-  type        = string
-  default     = null
+variable "is_primary" {
+  description = "If primary, the module will create the DynamoDB table and Lambda function for DB stream handling"
+  type        = bool
+  default     = false
 }
 
 variable "dbstream_handler_zip" {

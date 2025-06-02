@@ -7,9 +7,5 @@ output "db_table_arn" {
 }
 
 output "lambda_dbstream_function_name" {
-  value = module.dbstream_handler_lambda.lambda_function_name
-}
-
-output "lambda_dbstream_function_arn" {
-  value = module.dbstream_handler_lambda.lambda_function_arn
+  value = local.lambda_dbstream_handler_name
 }

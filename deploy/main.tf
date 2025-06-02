@@ -49,11 +49,10 @@ module "ahorro_wishlist_service_secondary_1" {
     aws.primary = aws.primary
   }
 
-  app_name             = var.app_name
-  service_name         = var.service_name
-  env                  = var.env
-  dbstream_handler_zip = var.dbstream_handler_zip
-  is_primary           = false
+  app_name     = var.app_name
+  service_name = var.service_name
+  env          = var.env
+  is_primary   = false
 
   depends_on = [module.ahorro_wishlist_service_primary]
 }

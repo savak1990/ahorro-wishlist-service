@@ -24,6 +24,7 @@ resource "aws_dynamodb_table_replica" "replica" {
 }
 
 module "dbstream_handler_lambda" {
+  count                = var.is_primary ? 1 : 0
   source               = "./modules/lambda"
   lambda_function_name = local.lambda_dbstream_handler_name
   lambda_zip           = var.dbstream_handler_zip
@@ -33,7 +34,7 @@ module "dbstream_handler_lambda" {
 resource "aws_lambda_event_source_mapping" "db_stream_handler" {
   count             = var.is_primary ? 1 : 0
   event_source_arn  = module.database[0].db_stream_arn
-  function_name     = module.dbstream_handler_lambda.lambda_function_name
+  function_name     = module.dbstream_handler_lambda[0].lambda_function_name
   starting_position = "LATEST"
 }
 

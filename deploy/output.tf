@@ -13,11 +13,3 @@ output "db_table_arn_secondary_1" {
 output "lambda_dbstream_function_name" {
   value = module.ahorro_wishlist_service_primary.lambda_dbstream_function_name
 }
-
-output "lambda_dbstream_function_arn" {
-  value = module.ahorro_wishlist_service_primary.lambda_dbstream_function_arn
-}
-
-output "lambda_dbstream_function_arn_secondary_1" {
-  value = module.ahorro_wishlist_service_secondary_1.lambda_dbstream_function_arn
-}

@@ -22,4 +22,5 @@ variable "is_primary" {
 variable "dbstream_handler_zip" {
   description = "The path to the Lambda function zip file for the DB stream handler"
   type        = string
+  default     = null
 }

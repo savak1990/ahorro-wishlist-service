@@ -1,19 +1,15 @@
 output "db_table_name" {
-  value = module.ahorro_wishlist_service.db_table_name
+  value = module.ahorro_wishlist_service_primary.db_table_name
 }
 
-output "gsi_names" {
-  value = module.ahorro_wishlist_service.gsi_names
+output "db_table_arn_primary" {
+  value = module.ahorro_wishlist_service_primary.db_table_arn
 }
 
-output "lsi_names" {
-  value = module.ahorro_wishlist_service.lsi_names
+output "db_table_arn_secondary_1" {
+  value = module.ahorro_wishlist_service_secondary_1.db_table_arn
 }
 
-output "lambda_function_name" {
-  value = module.ahorro_wishlist_service.lambda_function_name
-}
-
-output "lambda_function_arn" {
-  value = module.ahorro_wishlist_service.lambda_function_arn
+output "lambda_dbstream_function_name" {
+  value = module.ahorro_wishlist_service_primary.lambda_dbstream_function_name
 }

@@ -71,6 +71,16 @@ plan:
 		-var="env=$(INSTANCE_NAME)" \
 		-var="dbstream_handler_zip=$(DBSTREAM_HANDLER_FUNCTION_ZIP)"
 
+refresh:
+	cd deploy && \
+	terraform init \
+		-backend-config="key=dev/$(SERVICE_NAME)/$(INSTANCE_NAME)/terraform.tfstate" && \
+	terraform refresh \
+		-var="app_name=$(APP_NAME)" \
+		-var="service_name=$(SERVICE_NAME)" \
+		-var="env=$(INSTANCE_NAME)" \
+		-var="dbstream_handler_zip=$(DBSTREAM_HANDLER_FUNCTION_ZIP)"
+
 deploy:
 	cd deploy && \
 	terraform init \

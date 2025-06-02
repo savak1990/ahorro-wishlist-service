@@ -13,13 +13,14 @@ variable "env" {
   type        = string
 }
 
-variable "db_replica_regions" {
-  description = "List of regions for DynamoDB global tables"
-  type        = list(string)
-  default     = []
+variable "is_primary" {
+  description = "If primary, the module will create the DynamoDB table and Lambda function for DB stream handling"
+  type        = bool
+  default     = false
 }
 
 variable "dbstream_handler_zip" {
   description = "The path to the Lambda function zip file for the DB stream handler"
   type        = string
+  default     = null
 }

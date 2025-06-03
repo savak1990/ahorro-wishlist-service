@@ -12,18 +12,28 @@ provider "aws" {
   }
 }
 
-provider "aws" {
-  region = "eu-central-1"
-  alias  = "secondary-1"
+# provider "aws" {
+#   region = "eu-central-1"
+#   alias  = "secondary-1"
+#   default_tags {
+#     tags = {
+#       Environment = "dev"
+#       Project     = "ahorro-app"
+#       Service     = "ahorro-wishlist-service"
+#       Terraform   = "true"
+#     }
+#   }
+# }
 
-  default_tags {
-    tags = {
-      Environment = "dev"
-      Project     = "ahorro-app"
-      Service     = "ahorro-wishlist-service"
-      Terraform   = "true"
-    }
+data "aws_subnets" "default" {
+  filter {
+    name   = "default-for-az"
+    values = ["true"]
   }
+}
+
+data "aws_vpc" "default" {
+  default = true
 }
 
 module "ahorro_wishlist_service_primary" {
@@ -39,23 +49,23 @@ module "ahorro_wishlist_service_primary" {
   env                  = var.env
   dbstream_handler_zip = var.dbstream_handler_zip
   is_primary           = true
+  app_handler_zip      = var.app_handler_zip
+  alb_subnet_ids       = data.aws_subnets.default.ids
+  alb_vpc_id           = data.aws_vpc.default.id
 }
 
-module "ahorro_wishlist_service_secondary_1" {
-  source = "../terraform"
-
-  providers = {
-    aws         = aws.secondary-1
-    aws.primary = aws.primary
-  }
-
-  app_name     = var.app_name
-  service_name = var.service_name
-  env          = var.env
-  is_primary   = false
-
-  depends_on = [module.ahorro_wishlist_service_primary]
-}
+# module "ahorro_wishlist_service_secondary_1" {
+#   source = "../terraform"
+#   providers = {
+#     aws         = aws.secondary-1
+#     aws.primary = aws.primary
+#   }
+#   app_name     = var.app_name
+#   service_name = var.service_name
+#   env          = var.env
+#   is_primary   = false
+#   depends_on = [module.ahorro_wishlist_service_primary]
+# }
 
 terraform {
   backend "s3" {

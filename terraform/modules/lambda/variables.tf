@@ -19,3 +19,9 @@ variable "is_primary" {
   type        = bool
   default     = false
 }
+
+variable "extra_policy_arns" {
+  description = "List of additional IAM policy ARNs to attach to the Lambda role."
+  type        = list(string)
+  default     = []
+}

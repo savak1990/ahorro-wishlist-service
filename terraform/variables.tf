@@ -24,3 +24,18 @@ variable "dbstream_handler_zip" {
   type        = string
   default     = null
 }
+
+variable "app_handler_zip" {
+  description = "Path to the zipped Go Lambda handler for the app."
+  type        = string
+}
+
+variable "alb_vpc_id" {
+  description = "The VPC ID for the ALB."
+  type        = string
+}
+
+variable "alb_subnet_ids" {
+  description = "List of subnet IDs for the ALB."
+  type        = list(string)
+}

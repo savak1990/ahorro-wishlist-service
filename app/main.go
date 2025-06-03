@@ -83,7 +83,6 @@ func main() {
 				resp.Headers = map[string]string{}
 			}
 			resp.Headers["Content-Type"] = "application/json"
-			resp.MultiValueHeaders = nil // Remove multiValueHeaders for ALB
 
 			return resp, err
 		})

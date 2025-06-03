@@ -30,7 +30,7 @@ SEED_CLEAR_SCRIPT=$(SEED_PATH)/clear_db.py
 .PHONY: all app-build app-test app-run dbstream-handler-build dbstream-handler-test dbstream-handler-package seed unseed clean functional-test deploy undeploy plan
 
 # Build and package main app
-$(APP_LAMBDA_BINARY): $(APP_DIR)/main.go
+$(APP_LAMBDA_BINARY): $(shell find $(APP_DIR) -type f -name '*.go')
 	@mkdir -p $(APP_BUILD_DIR)
 	cd $(APP_DIR) && GOOS=linux GOARCH=amd64 go build -o ../$(APP_LAMBDA_BINARY) main.go
 
@@ -55,7 +55,7 @@ $(APP_LAMBDA_HANDLER_ZIP): $(APP_LAMBDA_BINARY)
 app-package-lambda: $(APP_LAMBDA_HANDLER_ZIP)
 
 # Build and package db stream handler
-$(DBSTREAM_HANDLER_BINARY): $(DBSTREAM_HANDLER_DIR)/main.go
+$(DBSTREAM_HANDLER_BINARY): $(shell find $(DBSTREAM_HANDLER_DIR) -type f -name '*.go')
 	@mkdir -p $(DBSTREAM_HANDLER_BUILD_DIR)
 	cd $(DBSTREAM_HANDLER_DIR) && GOOS=linux GOARCH=amd64 go build -o ../$(DBSTREAM_HANDLER_BINARY) main.go
 
@@ -69,6 +69,13 @@ $(DBSTREAM_HANDLER_FUNCTION_ZIP): $(DBSTREAM_HANDLER_BINARY)
 	cd $(DBSTREAM_HANDLER_BUILD_DIR) && zip $(DBSTREAM_HANDLER_ZIP_NAME) bootstrap
 
 dbstream-handler-package: $(DBSTREAM_HANDLER_FUNCTION_ZIP)
+
+# Combined build and package targets
+build: $(APP_BINARY) $(APP_LAMBDA_BINARY) $(DBSTREAM_HANDLER_BINARY)
+
+test: app-test dbstream-handler-test
+
+package: $(APP_LAMBDA_HANDLER_ZIP) $(DBSTREAM_HANDLER_FUNCTION_ZIP)
 
 # Terraform deployment helpers
 
@@ -94,7 +101,7 @@ refresh:
 		-var="dbstream_handler_zip=../$(DBSTREAM_HANDLER_FUNCTION_ZIP)" \
 		-var="app_handler_zip=../$(APP_LAMBDA_HANDLER_ZIP)"
 
-deploy: $(APP_LAMBDA_HANDLER_ZIP) $(DBSTREAM_HANDLER_FUNCTION_ZIP)
+deploy:
 	cd deploy && \
 	terraform init \
 		-backend-config="key=dev/$(SERVICE_NAME)/$(INSTANCE_NAME)/terraform.tfstate" && \

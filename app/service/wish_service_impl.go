@@ -23,7 +23,7 @@ func NewWishService(wishRepository repo.WishRepository) *WishServiceImpl {
 
 func (w *WishServiceImpl) CreateWish(ctx context.Context, wish m.Wish) (*m.Wish, error) {
 
-	log.WithField("wish", wish).Debugf("Service: Creating wish")
+	log.WithField("wish", wish).Debugf("Service: Creating wish...")
 
 	if wish.Title == "" {
 		return nil, errors.New(m.ErrorCodeBadRequest + ": Wish title cannot be empty")
@@ -61,7 +61,13 @@ func (w *WishServiceImpl) UpdateWish(ctx context.Context, wish m.Wish) (*m.Wish,
 
 	curWish, err := w.wishRepo.GetWishByWishId(ctx, wish.UserId, wish.WishId)
 	if err != nil {
-		return nil, errors.New(m.ErrorCodeInternalServer + ": Failed to fetch wish: " + err.Error())
+		log.WithField("wishId", wish.WishId).WithField("userId", wish.UserId).Error("Service: Failed to fetch current wish")
+		return nil, errors.New(m.ErrorCodeInternalServer + ": Failed to fetch wish (wishId: " + wish.WishId + ", userId: " + wish.UserId + "): " + err.Error())
+	}
+
+	if curWish == nil {
+		log.WithField("wishId", wish.WishId).WithField("userId", wish.UserId).Warn("Service: Wish not found")
+		return nil, errors.New(m.ErrorCodeNotFound + ": Wish not found (wishId: " + wish.WishId + ", userId: " + wish.UserId + ")")
 	}
 
 	wish.Updated = time.Now().UTC().Format(time.RFC3339)

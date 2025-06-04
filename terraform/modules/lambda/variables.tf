@@ -8,14 +8,13 @@ variable "lambda_zip" {
   type        = string
 }
 
+variable "lambda_role_arn" {
+  description = "The ARN of the IAM role for the Lambda function"
+  type        = string
+}
+
 variable "lambda_environment_variables" {
   description = "Environment variables for the Lambda function"
   type        = map(string)
   default     = {}
-}
-
-variable "is_primary" {
-  description = "Create global resoures only if this is the primary module"
-  type        = bool
-  default     = false
 }

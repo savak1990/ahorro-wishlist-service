@@ -72,10 +72,10 @@ func main() {
 			resp, err := adapter.ProxyWithContext(ctx, event)
 
 			// Pretty-print the response
-			if respBytes, err2 := json.MarshalIndent(resp, "", "  "); err2 == nil {
+			if respBytes, err := json.MarshalIndent(resp, "", "  "); err == nil {
 				log.Info("ALB response:\n" + string(respBytes))
 			} else {
-				log.WithError(err2).Warn("Failed to marshal ALB response")
+				log.WithError(err).Warn("Failed to marshal ALB response")
 			}
 
 			// Ensure headers is not nil and set Content-Type to application/json

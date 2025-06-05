@@ -1,13 +1,9 @@
-output "db_table_name" {
-  value = aws_dynamodb_table.database.name
-}
-
-output "db_table_arn" {
+output "table_arn" {
   value = aws_dynamodb_table.database.arn
 }
 
-output "db_stream_arn" {
-  value = aws_dynamodb_table.database.stream_arn
+output "db_app_handler_policy_arn" {
+  value = aws_iam_policy.dynamodb_service_access.arn
 }
 
 output "gsi_names" {

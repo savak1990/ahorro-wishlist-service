@@ -1,4 +1,6 @@
 locals {
+  app_db_service_policy_name = "${var.db_table_name}-service-access"
+
   # Global Secondary Index (GSI)
   db_gsi_all_created  = "${var.db_table_name}-gsi-all-created"
   db_gsi_all_priority = "${var.db_table_name}-gsi-all-priority"
@@ -97,4 +99,46 @@ resource "aws_dynamodb_table" "database" {
   point_in_time_recovery {
     enabled = true
   }
+
+  replica {
+    region_name = var.replica_region
+  }
+
+  lifecycle {
+    # enable this to prevent accidental deletion of the table
+    # prevent_destroy = true
+
+    # Without this change, each time you do deploy, it will try to put some changes
+    # to the stream, and it will cause recreation of the replica table. Comment
+    # it out if you really want to change this setting.
+    ignore_changes = [
+      stream_enabled,
+    ]
+  }
+}
+
+resource "aws_iam_policy" "dynamodb_service_access" {
+  name        = local.app_db_service_policy_name
+  description = "Least-privilege DynamoDB access for Lambda to get and update items"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Query",
+          "dynamodb:DescribeTable"
+        ]
+        Resource = [
+          "arn:aws:dynamodb:*:*:table/${var.db_table_name}",
+          "arn:aws:dynamodb:*:*:table/${var.db_table_name}/index/*"
+        ]
+      }
+    ]
+  })
 }

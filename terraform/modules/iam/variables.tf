@@ -1,14 +1,9 @@
-variable "app_name" {
-  description = "The name of the application"
+variable "db_table_name" {
+  description = "The name of the DynamoDB table"
   type        = string
 }
 
-variable "service_name" {
-  description = "The name of the service"
-  type        = string
-}
-
-variable "env" {
-  description = "The environment for the deployment (e.g., dev, prod, named env)"
+variable "db_app_handler_policy_arn" {
+  description = "The ARN of the IAM policy for the app handler"
   type        = string
 }

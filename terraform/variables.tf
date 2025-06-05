@@ -1,22 +1,11 @@
-variable "app_name" {
-  description = "The name of the application"
+variable "base_name" {
+  description = "The base name for the application, used to construct resource names."
   type        = string
 }
 
-variable "service_name" {
-  description = "The name of the service"
+variable "db_table_name" {
+  description = "The name of the DynamoDB table"
   type        = string
-}
-
-variable "env" {
-  description = "The environment for the deployment (e.g., dev, prod, named env)"
-  type        = string
-}
-
-variable "is_primary" {
-  description = "If primary, the module will create the DynamoDB table and Lambda function for DB stream handling"
-  type        = bool
-  default     = false
 }
 
 variable "app_handler_zip" {

@@ -1,6 +1,5 @@
 provider "aws" {
   region = "us-east-1"
-  alias  = "primary"
 
   default_tags {
     tags = {
@@ -14,7 +13,8 @@ provider "aws" {
 
 provider "aws" {
   region = "eu-central-1"
-  alias  = "secondary"
+  alias  = "replica"
+
   default_tags {
     tags = {
       Environment = "dev"
@@ -26,15 +26,14 @@ provider "aws" {
 }
 
 data "aws_subnets" "primary" {
-  provider = aws.primary
   filter {
     name   = "default-for-az"
     values = ["true"]
   }
 }
 
-data "aws_subnets" "secondary" {
-  provider = aws.secondary
+data "aws_subnets" "replica" {
+  provider = aws.replica
   filter {
     name   = "default-for-az"
     values = ["true"]
@@ -42,66 +41,63 @@ data "aws_subnets" "secondary" {
 }
 
 data "aws_vpc" "primary" {
-  provider = aws.primary
+  default = true
+}
+
+data "aws_vpc" "replica" {
+  provider = aws.replica
   default  = true
 }
 
-data "aws_vpc" "secondary" {
-  provider = aws.secondary
-  default  = true
+locals {
+  base_name     = "${var.app_name}-${var.service_name}-${var.env}"
+  db_table_name = "${local.base_name}-db"
+}
+
+module "database" {
+  source         = "../terraform/modules/dynamodb"
+  db_table_name  = local.db_table_name
+  replica_region = "eu-central-1"
 }
 
 module "iam" {
-  source = "../terraform/modules/iam"
-  providers = {
-    aws = aws.primary
-  }
-
-  app_name     = var.app_name
-  service_name = var.service_name
-  env          = var.env
+  source                    = "../terraform/modules/iam"
+  db_table_name             = local.db_table_name
+  db_app_handler_policy_arn = module.database.db_app_handler_policy_arn
 }
 
 module "ahorro_wishlist_service_primary" {
   source = "../terraform"
 
-  providers = {
-    aws         = aws.primary
-    aws.primary = aws.primary
-  }
-
-  is_primary               = true
-  app_name                 = var.app_name
-  service_name             = var.service_name
-  env                      = var.env
+  base_name                = local.base_name
+  db_table_name            = local.db_table_name
   app_handler_zip          = var.app_handler_zip
   app_lambda_role_arn      = module.iam.app_lambda_role_arn
   dbstream_handler_zip     = var.dbstream_handler_zip
   dbstream_lambda_role_arn = module.iam.dbstream_lambda_role_arn
   alb_subnet_ids           = data.aws_subnets.primary.ids
   alb_vpc_id               = data.aws_vpc.primary.id
+
+  depends_on = [module.database]
 }
 
-module "ahorro_wishlist_service_secondary_1" {
+module "ahorro_wishlist_service_replica" {
   source = "../terraform"
 
   providers = {
-    aws         = aws.secondary
-    aws.primary = aws.primary
+    aws = aws.replica
   }
 
-  is_primary               = false
-  app_name                 = var.app_name
-  service_name             = var.service_name
-  env                      = var.env
+  base_name                = local.base_name
+  db_table_name            = local.db_table_name
   app_handler_zip          = var.app_handler_zip
   app_lambda_role_arn      = module.iam.app_lambda_role_arn
   dbstream_handler_zip     = var.dbstream_handler_zip
   dbstream_lambda_role_arn = module.iam.dbstream_lambda_role_arn
-  alb_subnet_ids           = data.aws_subnets.secondary.ids
-  alb_vpc_id               = data.aws_vpc.secondary.id
+  alb_subnet_ids           = data.aws_subnets.replica.ids
+  alb_vpc_id               = data.aws_vpc.replica.id
 
-  depends_on = [module.ahorro_wishlist_service_primary]
+  depends_on = [module.database]
 }
 
 terraform {

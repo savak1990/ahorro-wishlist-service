@@ -1,8 +1,7 @@
 locals {
-  db_table_name              = "${var.app_name}-${var.service_name}-${var.env}-db"
-  app_lambda_role            = "${var.app_name}-${var.service_name}-${var.env}-role"
-  app_db_service_policy_name = "${var.app_name}-${var.service_name}-${var.env}-dynamodb-service-access"
-  dbstream_lambda_role       = "${var.app_name}-${var.service_name}-${var.env}-dbstream-role"
+  app_lambda_role            = "${var.db_table_name}-role"
+  app_db_service_policy_name = "${var.db_table_name}-service-access"
+  dbstream_lambda_role       = "${var.db_table_name}-stream-role"
 }
 
 data "aws_iam_policy_document" "lambda_assume_role_policy" {
@@ -28,33 +27,7 @@ resource "aws_iam_role_policy_attachment" "app_lambda_exec_policy_attachment" {
 
 resource "aws_iam_role_policy_attachment" "app_lambda_db_policy_attachment" {
   role       = aws_iam_role.app_lambda_role.name
-  policy_arn = aws_iam_policy.dynamodb_service_access.arn
-}
-
-resource "aws_iam_policy" "dynamodb_service_access" {
-  name        = local.app_db_service_policy_name
-  description = "Least-privilege DynamoDB access for Lambda to get and update items"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem",
-          "dynamodb:Query",
-          "dynamodb:DescribeTable"
-        ]
-        Resource = [
-          "arn:aws:dynamodb:*:*:table/${local.db_table_name}",
-          "arn:aws:dynamodb:*:*:table/${local.db_table_name}/index/*"
-        ]
-      }
-    ]
-  })
+  policy_arn = var.db_app_handler_policy_arn
 }
 
 # Create IAM role for DB stream handler Lambda function

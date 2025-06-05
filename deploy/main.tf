@@ -70,15 +70,15 @@ module "ahorro_wishlist_service_primary" {
   source = "../terraform"
 
   base_name                = local.base_name
+  is_primary               = true
   db_table_name            = local.db_table_name
+  db_stream_arn            = module.database.stream_arn
   app_handler_zip          = var.app_handler_zip
   app_lambda_role_arn      = module.iam.app_lambda_role_arn
   dbstream_handler_zip     = var.dbstream_handler_zip
   dbstream_lambda_role_arn = module.iam.dbstream_lambda_role_arn
   alb_subnet_ids           = data.aws_subnets.primary.ids
   alb_vpc_id               = data.aws_vpc.primary.id
-
-  depends_on = [module.database]
 }
 
 module "ahorro_wishlist_service_replica" {
@@ -88,8 +88,10 @@ module "ahorro_wishlist_service_replica" {
     aws = aws.replica
   }
 
+  is_primary               = false
   base_name                = local.base_name
   db_table_name            = local.db_table_name
+  db_stream_arn            = module.database.stream_arn
   app_handler_zip          = var.app_handler_zip
   app_lambda_role_arn      = module.iam.app_lambda_role_arn
   dbstream_handler_zip     = var.dbstream_handler_zip

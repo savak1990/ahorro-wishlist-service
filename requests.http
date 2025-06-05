@@ -1,5 +1,5 @@
 #@baseUrl = http://localhost:8080
-@baseUrl = http://ahorro-wishlist-savak-alb-242928517.us-east-1.elb.amazonaws.com
+@baseUrl = http://ahorro-wishlist-savak-alb-881949398.eu-central-1.elb.amazonaws.com
 ### Info
 GET {{baseUrl}}/info
 

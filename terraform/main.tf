@@ -6,11 +6,8 @@ locals {
   dynamodb_service_access_policy_name = "${var.base_name}-db-access-policy"
 }
 
-data "aws_dynamodb_table" "instance" {
-  name = var.db_table_name
-}
-
 module "dbstream_handler_lambda" {
+  count                = var.is_primary ? 1 : 0
   source               = "./modules/lambda"
   lambda_function_name = local.lambda_dbstream_handler_name
   lambda_zip           = var.dbstream_handler_zip
@@ -18,8 +15,9 @@ module "dbstream_handler_lambda" {
 }
 
 resource "aws_lambda_event_source_mapping" "db_stream_handler" {
-  event_source_arn  = data.aws_dynamodb_table.instance.stream_arn
-  function_name     = module.dbstream_handler_lambda.lambda_function_name
+  count             = var.is_primary ? 1 : 0
+  event_source_arn  = var.db_stream_arn
+  function_name     = module.dbstream_handler_lambda[0].lambda_function_name
   starting_position = "LATEST"
 }
 

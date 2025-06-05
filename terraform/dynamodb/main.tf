@@ -143,15 +143,22 @@ resource "aws_iam_role_policy_attachment" "dbstream_lambda_db_policy_attachment"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole"
 }
 
-module "dbstream_handler_lambda" {
-  source               = "../lambda"
-  lambda_function_name = local.lambda_dbstream_handler_name
-  lambda_zip           = var.dbstream_handler_zip
-  lambda_role_arn      = aws_iam_role.dbstream_lambda_role.arn
+resource "aws_lambda_function" "lambda" {
+  function_name    = local.lambda_dbstream_handler_name
+  role             = aws_iam_role.dbstream_lambda_role.arn
+  handler          = "bootstrap"
+  runtime          = "provided.al2"
+  filename         = var.dbstream_handler_zip
+  source_code_hash = filebase64sha256(var.dbstream_handler_zip)
+}
+
+resource "aws_cloudwatch_log_group" "lambda_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.lambda.function_name}"
+  retention_in_days = 14
 }
 
 resource "aws_lambda_event_source_mapping" "db_stream_handler" {
   event_source_arn  = aws_dynamodb_table.database.stream_arn
-  function_name     = module.dbstream_handler_lambda.lambda_function_name
+  function_name     = aws_lambda_function.lambda.function_name
   starting_position = "LATEST"
 }

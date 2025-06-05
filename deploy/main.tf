@@ -55,19 +55,19 @@ locals {
 }
 
 module "database" {
-  source               = "../terraform/modules/dynamodb"
+  source               = "../terraform/dynamodb"
   db_table_name        = local.db_table_name
   replica_region       = "eu-central-1"
   dbstream_handler_zip = var.dbstream_handler_zip
 }
 
 module "iam" {
-  source        = "../terraform/modules/iam"
+  source        = "../terraform/iam"
   db_table_name = local.db_table_name
 }
 
 module "ahorro_wishlist_service_primary" {
-  source = "../terraform"
+  source = "../terraform/service"
 
   base_name           = local.base_name
   db_table_name       = local.db_table_name
@@ -78,7 +78,7 @@ module "ahorro_wishlist_service_primary" {
 }
 
 module "ahorro_wishlist_service_replica" {
-  source = "../terraform"
+  source = "../terraform/service"
 
   providers = {
     aws = aws.replica

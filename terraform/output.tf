@@ -1,7 +1,3 @@
-output "lambda_dbstream_function_name" {
-  value = local.lambda_dbstream_handler_name
-}
-
 output "lambda_app_function_name" {
   value = local.lambda_app_handler_name
 }

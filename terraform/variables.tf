@@ -3,18 +3,8 @@ variable "base_name" {
   type        = string
 }
 
-variable "is_primary" {
-  description = "Indicates if this is the primary region for the application."
-  type        = bool
-}
-
 variable "db_table_name" {
   description = "The name of the DynamoDB table"
-  type        = string
-}
-
-variable "db_stream_arn" {
-  description = "The ARN of the DynamoDB stream to trigger the Lambda function"
   type        = string
 }
 
@@ -25,17 +15,6 @@ variable "app_handler_zip" {
 
 variable "app_lambda_role_arn" {
   description = "The ARN of the IAM role for the app Lambda function"
-  type        = string
-}
-
-variable "dbstream_handler_zip" {
-  description = "The path to the Lambda function zip file for the DB stream handler"
-  type        = string
-  default     = null
-}
-
-variable "dbstream_lambda_role_arn" {
-  description = "The ARN of the IAM role for the DB stream handler Lambda function"
   type        = string
 }
 

@@ -27,3 +27,8 @@ variable "alb_subnet_ids" {
   description = "List of subnet IDs for the ALB."
   type        = list(string)
 }
+
+variable "domain_name" {
+  description = "The name of the domain to create the certificate for."
+  type        = string
+}

@@ -1,6 +1,5 @@
 #@baseUrl = http://localhost:8080
-#@baseUrl = http://ahorro-wishlist-savak-alb-831179244.us-east-1.elb.amazonaws.com
-@baseUrl = http://ahorro-wishlist-savak-alb-1577097637.eu-central-1.elb.amazonaws.com
+@baseUrl = http://ahorro-wishlist-savak-alb-1075899136.us-east-1.elb.amazonaws.com
 ### Info
 GET {{baseUrl}}/info
 
@@ -55,8 +54,8 @@ Content-Type: application/json
     "due": "2024-06-01T00:00:00Z"
 }
 
-### Update a wish for user1
-PUT {{baseUrl}}/wishes/user1/wish1
+### Update a wish for user50
+PUT {{baseUrl}}/wishes/user50/wish1
 Content-Type: application/json
 
 {

@@ -50,7 +50,7 @@ data "aws_vpc" "replica" {
 }
 
 data "aws_secretsmanager_secret" "ahorro_app" {
-  name = "ahorro-app"
+  name = local.secret_name
 }
 
 data "aws_secretsmanager_secret_version" "ahorro_app" {
@@ -64,6 +64,7 @@ data "aws_route53_zone" "public" {
 
 locals {
   base_name         = "${var.app_name}-${var.service_name}-${var.env}"
+  secret_name       = "ahorro-app"
   db_table_name     = "${local.base_name}-db"
   ahorro_app_secret = jsondecode(data.aws_secretsmanager_secret_version.ahorro_app.secret_string)
   domain_name       = local.ahorro_app_secret["domain_name"]

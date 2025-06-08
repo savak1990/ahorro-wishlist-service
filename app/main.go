@@ -83,6 +83,7 @@ func main() {
 				resp.Headers = map[string]string{}
 			}
 			resp.Headers["Content-Type"] = "application/json"
+			resp.Headers["X-AWS-Region"] = appCfg.AWSRegion
 
 			return resp, err
 		})

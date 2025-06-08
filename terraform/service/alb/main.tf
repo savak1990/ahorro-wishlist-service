@@ -9,6 +9,16 @@ resource "aws_lb" "this" {
 resource "aws_lb_target_group" "lambda" {
   name        = var.target_group_name
   target_type = "lambda"
+
+  health_check {
+    enabled             = true
+    path                = "/health"
+    matcher             = "200"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
 }
 
 resource "aws_lambda_permission" "alb" {

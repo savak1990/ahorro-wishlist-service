@@ -49,9 +49,19 @@ data "aws_vpc" "replica" {
   default  = true
 }
 
+data "aws_secretsmanager_secret" "ahorro_app" {
+  name = "ahorro-app"
+}
+
+data "aws_secretsmanager_secret_version" "ahorro_app" {
+  secret_id = data.aws_secretsmanager_secret.ahorro_app.id
+}
+
 locals {
-  base_name     = "${var.app_name}-${var.service_name}-${var.env}"
-  db_table_name = "${local.base_name}-db"
+  base_name         = "${var.app_name}-${var.service_name}-${var.env}"
+  db_table_name     = "${local.base_name}-db"
+  ahorro_app_secret = jsondecode(data.aws_secretsmanager_secret_version.ahorro_app.secret_string)
+  domain_name       = local.ahorro_app_secret["domain_name"]
 }
 
 module "database" {
@@ -75,6 +85,8 @@ module "ahorro_wishlist_service_primary" {
   app_lambda_role_arn = module.iam.app_lambda_role_arn
   alb_subnet_ids      = data.aws_subnets.primary.ids
   alb_vpc_id          = data.aws_vpc.primary.id
+
+  depends_on = [module.database, module.iam]
 }
 
 module "ahorro_wishlist_service_replica" {
@@ -91,7 +103,31 @@ module "ahorro_wishlist_service_replica" {
   alb_subnet_ids      = data.aws_subnets.replica.ids
   alb_vpc_id          = data.aws_vpc.replica.id
 
-  depends_on = [module.database]
+  depends_on = [module.database, module.iam]
+}
+
+data "aws_route53_zone" "public" {
+  name         = local.domain_name
+  private_zone = false
+}
+
+# Latency-based alias records for each ALB
+resource "aws_route53_record" "wishlist_service" {
+  count          = 2
+  zone_id        = data.aws_route53_zone.public.zone_id
+  name           = "api.${var.app_name}-${var.service_name}.${var.env}.${local.domain_name}"
+  type           = "A"
+  set_identifier = count.index == 0 ? "primary" : "replica"
+
+  alias {
+    name                   = count.index == 0 ? module.ahorro_wishlist_service_primary.alb_dns_name : module.ahorro_wishlist_service_replica.alb_dns_name
+    zone_id                = count.index == 0 ? module.ahorro_wishlist_service_primary.alb_zone_id : module.ahorro_wishlist_service_replica.alb_zone_id
+    evaluate_target_health = true
+  }
+
+  latency_routing_policy {
+    region = count.index == 0 ? "us-east-1" : "eu-central-1"
+  }
 }
 
 terraform {

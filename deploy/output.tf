@@ -13,3 +13,10 @@ output "alb_dns_name_primary" {
 output "alb_dns_name_secondary" {
   value = module.ahorro_wishlist_service_replica.alb_dns_name
 }
+
+output "wishlist_service_dns" {
+  value = [
+    aws_route53_record.wishlist_service[0].fqdn,
+    aws_route53_record.wishlist_service[1].fqdn
+  ]
+}

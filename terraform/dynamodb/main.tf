@@ -101,10 +101,6 @@ resource "aws_dynamodb_table" "database" {
     enabled = true
   }
 
-  replica {
-    region_name = var.replica_region
-  }
-
   lifecycle {
     # enable this to prevent accidental deletion of the table
     # prevent_destroy = true

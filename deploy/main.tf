@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "eu-west-1"
 
   default_tags {
     tags = {
@@ -9,44 +9,6 @@ provider "aws" {
       Terraform   = "true"
     }
   }
-}
-
-provider "aws" {
-  region = "eu-central-1"
-  alias  = "replica"
-
-  default_tags {
-    tags = {
-      Environment = "dev"
-      Project     = "ahorro-app"
-      Service     = "ahorro-wishlist-service"
-      Terraform   = "true"
-    }
-  }
-}
-
-data "aws_subnets" "primary" {
-  filter {
-    name   = "default-for-az"
-    values = ["true"]
-  }
-}
-
-data "aws_subnets" "replica" {
-  provider = aws.replica
-  filter {
-    name   = "default-for-az"
-    values = ["true"]
-  }
-}
-
-data "aws_vpc" "primary" {
-  default = true
-}
-
-data "aws_vpc" "replica" {
-  provider = aws.replica
-  default  = true
 }
 
 data "aws_secretsmanager_secret" "ahorro_app" {
@@ -57,6 +19,12 @@ data "aws_secretsmanager_secret_version" "ahorro_app" {
   secret_id = data.aws_secretsmanager_secret.ahorro_app.id
 }
 
+data "aws_acm_certificate" "cert" {
+  domain      = "*.${local.domain_name}"
+  statuses    = ["ISSUED"]
+  most_recent = true
+}
+
 data "aws_route53_zone" "public" {
   name         = local.domain_name
   private_zone = false
@@ -64,17 +32,17 @@ data "aws_route53_zone" "public" {
 
 locals {
   base_name         = "${var.app_name}-${var.service_name}-${var.env}"
-  secret_name       = "ahorro-app"
+  app_lambda_name   = "${local.base_name}-app-lambda"
   db_table_name     = "${local.base_name}-db"
+  secret_name       = "${var.app_name}-app-secrets"
   ahorro_app_secret = jsondecode(data.aws_secretsmanager_secret_version.ahorro_app.secret_string)
   domain_name       = local.ahorro_app_secret["domain_name"]
-  fqdn              = "api.${var.app_name}-${var.service_name}.${var.env}.${local.domain_name}"
+  fqdn              = "api-${var.app_name}.${local.domain_name}"
 }
 
 module "database" {
   source               = "../terraform/dynamodb"
   db_table_name        = local.db_table_name
-  replica_region       = "eu-central-1"
   dbstream_handler_zip = var.dbstream_handler_zip
 }
 
@@ -83,77 +51,35 @@ module "iam" {
   db_table_name = local.db_table_name
 }
 
-module "ahorro_wishlist_service_primary" {
+module "ahorro_wishlist_service" {
   source = "../terraform/service"
 
-  base_name           = local.base_name
   db_table_name       = local.db_table_name
+  app_lambda_name     = local.app_lambda_name
   app_handler_zip     = var.app_handler_zip
   app_lambda_role_arn = module.iam.app_lambda_role_arn
-  alb_subnet_ids      = data.aws_subnets.primary.ids
-  alb_vpc_id          = data.aws_vpc.primary.id
-  domain_name         = local.domain_name
 
   depends_on = [module.database, module.iam]
 }
 
-module "ahorro_wishlist_service_replica" {
-  source = "../terraform/service"
+module "apigateway" {
+  source = "../../ahorro-app-live/modules/apigateway"
 
-  providers = {
-    aws = aws.replica
-  }
+  api_name        = "api.${var.app_name}"
+  stage_name      = var.env
+  domain_name     = local.fqdn
+  certificate_arn = data.aws_acm_certificate.cert.arn
+  zone_id         = data.aws_route53_zone.public.zone_id
 
-  base_name           = local.base_name
-  db_table_name       = local.db_table_name
-  app_handler_zip     = var.app_handler_zip
-  app_lambda_role_arn = module.iam.app_lambda_role_arn
-  alb_subnet_ids      = data.aws_subnets.replica.ids
-  alb_vpc_id          = data.aws_vpc.replica.id
-  domain_name         = local.domain_name
-
-  depends_on = [module.database, module.iam]
-}
-
-resource "aws_route53_record" "wishlist_service_primary" {
-  zone_id        = data.aws_route53_zone.public.zone_id
-  name           = local.fqdn
-  type           = "A"
-  set_identifier = "primary"
-
-  alias {
-    name                   = module.ahorro_wishlist_service_primary.alb_dns_name
-    zone_id                = module.ahorro_wishlist_service_primary.alb_zone_id
-    evaluate_target_health = true
-  }
-
-  latency_routing_policy {
-    region = "us-east-1"
-  }
-}
-
-resource "aws_route53_record" "wishlist_service_replica" {
-  zone_id        = data.aws_route53_zone.public.zone_id
-  name           = local.fqdn
-  type           = "A"
-  set_identifier = "replica"
-
-  alias {
-    name                   = module.ahorro_wishlist_service_replica.alb_dns_name
-    zone_id                = module.ahorro_wishlist_service_replica.alb_zone_id
-    evaluate_target_health = true
-  }
-
-  latency_routing_policy {
-    region = "eu-central-1"
-  }
+  wishlist_lambda_name       = module.ahorro_wishlist_service.wishlist_lambda_app_name
+  wishlist_lambda_invoke_arn = module.ahorro_wishlist_service.wishlist_lambda_app_invoke_arn
 }
 
 terraform {
   backend "s3" {
-    bucket = "ahorro-app-terraform-state"
+    bucket = "ahorro-app-state"
     # key is set in the makefile and passed as a backend-config variable
-    region         = "us-east-1"
+    region         = "eu-west-1"
     dynamodb_table = "ahorro-app-state-lock"
     encrypt        = true
   }

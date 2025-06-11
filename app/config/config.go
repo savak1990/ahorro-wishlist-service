@@ -10,7 +10,7 @@ type AppConfig struct {
 
 func LoadConfig() AppConfig {
 	return AppConfig{
-		AWSRegion:  getEnv("AWS_REGION", "us-east-1"),
+		AWSRegion:  getEnv("AWS_REGION", "eu-west-1"),
 		AWSProfile: os.Getenv("AWS_PROFILE"),
 		TableName:  os.Getenv("DYNAMODB_TABLE"),
 	}

@@ -7,7 +7,8 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	muxadapter "github.com/awslabs/aws-lambda-go-api-proxy/gorillamux"
+	"github.com/awslabs/aws-lambda-go-api-proxy/core"
+	"github.com/awslabs/aws-lambda-go-api-proxy/gorillamux"
 	"github.com/gorilla/mux"
 	"github.com/savak1990/test-dynamodb-app/app/aws"
 	"github.com/savak1990/test-dynamodb-app/app/config"
@@ -25,6 +26,27 @@ func init() {
 		FullTimestamp: true,
 	})
 	log.SetLevel(log.InfoLevel)
+}
+
+// Lambda handler for API Gateway
+func lambdaHandler(adapter *gorillamux.GorillaMuxAdapter) func(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	return func(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+		if reqBytes, err := json.MarshalIndent(event, "", "  "); err == nil {
+			log.Info("API Gateway request:\n" + string(reqBytes))
+		} else {
+			log.WithError(err).Warn("Failed to marshal API Gateway request")
+		}
+
+		resp, err := adapter.ProxyWithContext(ctx, *core.NewSwitchableAPIGatewayRequestV1(&event))
+
+		if respBytes, err := json.MarshalIndent(resp, "", "  "); err == nil {
+			log.Info("API Gateway response:\n" + string(respBytes))
+		} else {
+			log.WithError(err).Warn("Failed to marshal API Gateway response")
+		}
+
+		return *resp.Version1(), err
+	}
 }
 
 func main() {
@@ -48,6 +70,7 @@ func main() {
 
 	router := mux.NewRouter()
 	router.Use(mux.CORSMethodMiddleware(router))
+	router.Use(handler.EnsureAwsRegionHeader(appCfg.AWSRegion))
 
 	router.HandleFunc("/wishes/{userId}/{wishId}", wishHandler.GetWishByWishId).Methods("GET")
 	router.HandleFunc("/wishes/{userId}", wishHandler.GetWishList).Methods("GET")
@@ -57,36 +80,10 @@ func main() {
 	router.HandleFunc("/health", commonHandler.HandleHealth).Methods("GET")
 	router.HandleFunc("/info", commonHandler.HandleInfo).Methods("GET")
 
-	// Lambda/ALB integration: use the muxadapter if running in Lambda
+	// Lambda/API Gateway integration: use the muxadapter if running in Lambda
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") != "" || os.Getenv("_LAMBDA_SERVER_PORT") != "" {
-		adapter := muxadapter.NewALB(router)
-		lambda.Start(func(ctx context.Context, event events.ALBTargetGroupRequest) (events.ALBTargetGroupResponse, error) {
-
-			// Pretty-print the incoming request
-			if reqBytes, err := json.MarshalIndent(event, "", "  "); err == nil {
-				log.Info("ALB request:\n" + string(reqBytes))
-			} else {
-				log.WithError(err).Warn("Failed to marshal ALB request")
-			}
-
-			resp, err := adapter.ProxyWithContext(ctx, event)
-
-			// Pretty-print the response
-			if respBytes, err := json.MarshalIndent(resp, "", "  "); err == nil {
-				log.Info("ALB response:\n" + string(respBytes))
-			} else {
-				log.WithError(err).Warn("Failed to marshal ALB response")
-			}
-
-			// Ensure headers is not nil and set Content-Type to application/json
-			if resp.Headers == nil {
-				resp.Headers = map[string]string{}
-			}
-			resp.Headers["Content-Type"] = "application/json"
-			resp.Headers["X-AWS-Region"] = appCfg.AWSRegion
-
-			return resp, err
-		})
+		adapter := gorillamux.New(router)
+		lambda.Start(lambdaHandler(adapter))
 		return
 	}
 

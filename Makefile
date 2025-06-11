@@ -123,6 +123,9 @@ undeploy:
 		-var="dbstream_handler_zip=../$(DBSTREAM_HANDLER_FUNCTION_ZIP)" \
 		-var="app_handler_zip=../$(APP_LAMBDA_HANDLER_ZIP)"
 
+show-api-url:
+	@cd deploy && terraform output -raw api_url
+
 # Prepopulate the database with seed data
 
 unseed:

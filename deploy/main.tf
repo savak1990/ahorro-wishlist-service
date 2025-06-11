@@ -37,7 +37,7 @@ locals {
   secret_name       = "${var.app_name}-app-secrets"
   ahorro_app_secret = jsondecode(data.aws_secretsmanager_secret_version.ahorro_app.secret_string)
   domain_name       = local.ahorro_app_secret["domain_name"]
-  fqdn              = "api-${var.app_name}.${local.domain_name}"
+  fqdn              = "api-${var.app_name}-${var.env}.${local.domain_name}"
 }
 
 module "database" {

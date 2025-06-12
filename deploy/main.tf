@@ -65,7 +65,7 @@ module "ahorro_wishlist_service" {
 module "apigateway" {
   source = "../../ahorro-app-live/modules/apigateway"
 
-  api_name        = "api.${var.app_name}"
+  api_name        = "api-${var.app_name}-${var.env}"
   stage_name      = var.env
   domain_name     = local.fqdn
   certificate_arn = data.aws_acm_certificate.cert.arn

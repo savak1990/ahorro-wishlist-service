@@ -37,7 +37,7 @@ locals {
   secret_name       = "${var.app_name}-app-secrets"
   ahorro_app_secret = jsondecode(data.aws_secretsmanager_secret_version.ahorro_app.secret_string)
   domain_name       = local.ahorro_app_secret["domain_name"]
-  fqdn              = "api-${var.app_name}-${var.env}.${local.domain_name}"
+  full_api_name     = "api-${var.app_name}-${var.service_name}-${var.env}"
 }
 
 module "database" {
@@ -63,16 +63,18 @@ module "ahorro_wishlist_service" {
 }
 
 module "apigateway" {
-  source = "../../ahorro-app-live/modules/apigateway"
+  source = "../../ahorro-shared/terraform/apigateway"
 
-  api_name        = "api-${var.app_name}-${var.env}"
+  api_name        = local.full_api_name
   stage_name      = var.env
-  domain_name     = local.fqdn
+  domain_name     = local.domain_name
   certificate_arn = data.aws_acm_certificate.cert.arn
   zone_id         = data.aws_route53_zone.public.zone_id
 
   wishlist_lambda_name       = module.ahorro_wishlist_service.wishlist_lambda_app_name
   wishlist_lambda_invoke_arn = module.ahorro_wishlist_service.wishlist_lambda_app_invoke_arn
+
+  openapi_template_path = "../schema/openapi.yml.tmpl"
 }
 
 terraform {

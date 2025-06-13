@@ -58,23 +58,13 @@ module "ahorro_wishlist_service" {
   app_lambda_name     = local.app_lambda_name
   app_handler_zip     = var.app_handler_zip
   app_lambda_role_arn = module.iam.app_lambda_role_arn
+  api_name            = local.full_api_name
+  stage_name          = var.env
+  domain_name         = local.domain_name
+  certificate_arn     = data.aws_acm_certificate.cert.arn
+  zone_id             = data.aws_route53_zone.public.zone_id
 
   depends_on = [module.database, module.iam]
-}
-
-module "apigateway" {
-  source = "../../ahorro-shared/terraform/apigateway"
-
-  api_name        = local.full_api_name
-  stage_name      = var.env
-  domain_name     = local.domain_name
-  certificate_arn = data.aws_acm_certificate.cert.arn
-  zone_id         = data.aws_route53_zone.public.zone_id
-
-  wishlist_lambda_name       = module.ahorro_wishlist_service.wishlist_lambda_app_name
-  wishlist_lambda_invoke_arn = module.ahorro_wishlist_service.wishlist_lambda_app_invoke_arn
-
-  openapi_template_path = "../schema/openapi.yml.tmpl"
 }
 
 terraform {

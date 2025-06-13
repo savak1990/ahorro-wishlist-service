@@ -1,7 +1,4 @@
-output "wishlist_lambda_app_name" {
-  value = aws_lambda_function.app.function_name
-}
-
-output "wishlist_lambda_app_invoke_arn" {
-  value = aws_lambda_function.app.invoke_arn
+output "service_url" {
+  description = "The URL of the ahorro wishlist service."
+  value       = module.apigateway.api_gateway_url
 }

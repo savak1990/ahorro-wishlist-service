@@ -84,10 +84,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/Wish'
       x-amazon-apigateway-integration:
-        uri: "${lambda_invoke_arn}"
-        passthroughBehavior: when_no_match
-        httpMethod: POST
+        payloadFormatVersion: "2.0"
         type: aws_proxy
+        httpMethod: POST
+        uri: ${lambda_invoke_arn}
     post:
       tags: [wishes]
       summary: Create a new wish for a user
@@ -111,10 +111,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Wish'
       x-amazon-apigateway-integration:
-        uri: "${lambda_invoke_arn}"
-        passthroughBehavior: when_no_match
-        httpMethod: POST
+        payloadFormatVersion: "2.0"
         type: aws_proxy
+        httpMethod: POST
+        uri: ${lambda_invoke_arn}
 
   /wishes/{userId}/{wishId}:
     options:
@@ -169,10 +169,10 @@ paths:
         '404':
           description: Wish not found
       x-amazon-apigateway-integration:
-        uri: "${lambda_invoke_arn}"
-        passthroughBehavior: when_no_match
-        httpMethod: POST
+        payloadFormatVersion: "2.0"
         type: aws_proxy
+        httpMethod: POST
+        uri: ${lambda_invoke_arn}
     put:
       tags: [wishes]
       summary: Update a wish for a user
@@ -201,10 +201,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Wish'
       x-amazon-apigateway-integration:
-        uri: "${lambda_invoke_arn}"
-        passthroughBehavior: when_no_match
-        httpMethod: POST
+        payloadFormatVersion: "2.0"
         type: aws_proxy
+        httpMethod: POST
+        uri: ${lambda_invoke_arn}
     delete:
       tags: [wishes]
       summary: Delete a wish for a user
@@ -223,10 +223,10 @@ paths:
         '204':
           description: Wish deleted
       x-amazon-apigateway-integration:
-        uri: "${lambda_invoke_arn}"
-        passthroughBehavior: when_no_match
-        httpMethod: POST
+        payloadFormatVersion: "2.0"
         type: aws_proxy
+        httpMethod: POST
+        uri: ${lambda_invoke_arn}
 
   /wishes/all:
     options:
@@ -293,10 +293,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/Wish'
       x-amazon-apigateway-integration:
-        uri: "${lambda_invoke_arn}"
-        passthroughBehavior: when_no_match
-        httpMethod: POST
+        payloadFormatVersion: "2.0"
         type: aws_proxy
+        httpMethod: POST
+        uri: ${lambda_invoke_arn}
   /info:
     options:
       summary: CORS support
@@ -337,10 +337,10 @@ paths:
               schema:
                 type: object
       x-amazon-apigateway-integration:
-        uri: "${lambda_invoke_arn}"
-        passthroughBehavior: when_no_match
-        httpMethod: POST
+        payloadFormatVersion: "2.0"
         type: aws_proxy
+        httpMethod: POST
+        uri: ${lambda_invoke_arn}
   /health:
     options:
       summary: CORS support
@@ -381,10 +381,10 @@ paths:
               schema:
                 type: object
       x-amazon-apigateway-integration:
-        uri: "${lambda_invoke_arn}"
-        passthroughBehavior: when_no_match
-        httpMethod: POST
+        payloadFormatVersion: "2.0"
         type: aws_proxy
+        httpMethod: POST
+        uri: ${lambda_invoke_arn}
 
 components:
   schemas:

@@ -29,15 +29,15 @@ func init() {
 }
 
 // Lambda handler for API Gateway
-func lambdaHandler(adapter *gorillamux.GorillaMuxAdapter) func(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	return func(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func lambdaHandler(adapter *gorillamux.GorillaMuxAdapter) func(ctx context.Context, event events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	return func(ctx context.Context, event events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 		if reqBytes, err := json.MarshalIndent(event, "", "  "); err == nil {
 			log.Info("API Gateway request:\n" + string(reqBytes))
 		} else {
 			log.WithError(err).Warn("Failed to marshal API Gateway request")
 		}
 
-		resp, err := adapter.ProxyWithContext(ctx, *core.NewSwitchableAPIGatewayRequestV1(&event))
+		resp, err := adapter.ProxyWithContext(ctx, *core.NewSwitchableAPIGatewayRequestV2(&event))
 
 		if respBytes, err := json.MarshalIndent(resp, "", "  "); err == nil {
 			log.Info("API Gateway response:\n" + string(respBytes))
@@ -45,7 +45,7 @@ func lambdaHandler(adapter *gorillamux.GorillaMuxAdapter) func(ctx context.Conte
 			log.WithError(err).Warn("Failed to marshal API Gateway response")
 		}
 
-		return *resp.Version1(), err
+		return *resp.Version2(), err
 	}
 }
 

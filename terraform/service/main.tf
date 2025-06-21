@@ -28,7 +28,6 @@ module "apigateway" {
   domain_name           = var.domain_name
   zone_id               = var.zone_id
   certificate_arn       = var.certificate_arn
-  stage_name            = var.stage_name
   lambda_name           = aws_lambda_function.app.function_name
   lambda_invoke_arn     = aws_lambda_function.app.invoke_arn
   openapi_template_path = local.openapi_template_path

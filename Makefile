@@ -81,8 +81,7 @@ package: $(APP_LAMBDA_HANDLER_ZIP) $(DBSTREAM_HANDLER_FUNCTION_ZIP)
 
 plan:
 	cd deploy && \
-	terraform init \
-		-backend-config="key=dev/$(SERVICE_NAME)/$(INSTANCE_NAME)/terraform.tfstate" && \
+	terraform init && \
 	terraform plan \
 		-var="app_name=$(APP_NAME)" \
 		-var="service_name=$(SERVICE_NAME)" \
@@ -92,8 +91,7 @@ plan:
 
 refresh:
 	cd deploy && \
-	terraform init \
-		-backend-config="key=dev/$(SERVICE_NAME)/$(INSTANCE_NAME)/terraform.tfstate" && \
+	terraform init && \
 	terraform refresh \
 		-var="app_name=$(APP_NAME)" \
 		-var="service_name=$(SERVICE_NAME)" \
@@ -103,7 +101,13 @@ refresh:
 
 deploy:
 	cd deploy && \
-	terraform init \
+	terraform init && \
+	terraform apply -auto-approve \
+		-var="app_name=$(APP_NAME)" \
+		-var="service_name=$(SERVICE_NAME)" \
+		-var="env=$(INSTANCE_NAME)" \
+		-var="dbstream_handler_zip=../$(DBSTREAM_HANDLER_FUNCTION_ZIP)" \
+		-var="app_handler_zip=../$(APP_LAMBDA_HANDLER_ZIP)"
 		-backend-config="key=dev/$(SERVICE_NAME)/$(INSTANCE_NAME)/terraform.tfstate" && \
 	terraform apply -auto-approve \
 		-var="app_name=$(APP_NAME)" \
@@ -114,8 +118,7 @@ deploy:
 
 undeploy:
 	cd deploy && \
-	terraform init \
-		-backend-config="key=dev/$(SERVICE_NAME)/$(INSTANCE_NAME)/terraform.tfstate" && \
+	terraform init && \
 	terraform destroy -auto-approve \
 		-var="app_name=$(APP_NAME)" \
 		-var="service_name=$(SERVICE_NAME)" \

@@ -70,7 +70,8 @@ module "ahorro_wishlist_service" {
 terraform {
   backend "s3" {
     bucket = "ahorro-app-state"
-    # key is set in the makefile and passed as a backend-config variable
+    # Update the key if you want to store the state in a different path
+    key            = "dev/ahorro-wishlist-service/savak/terraform.tfstate"
     region         = "eu-west-1"
     dynamodb_table = "ahorro-app-state-lock"
     encrypt        = true

@@ -23,7 +23,7 @@ resource "aws_lambda_function" "app" {
 }
 
 module "apigateway" {
-  source                = "../../../ahorro-shared/terraform/apigateway"
+  source                = "../../../ahorro-shared/terraform/apigateway_http_openapi"
   api_name              = var.api_name
   domain_name           = var.domain_name
   zone_id               = var.zone_id
@@ -32,7 +32,7 @@ module "apigateway" {
   lambda_invoke_arn     = aws_lambda_function.app.invoke_arn
   openapi_template_path = local.openapi_template_path
   openapi_template_replacements = {
-    "lambda_invoke_arn" = aws_lambda_function.app.invoke_arn
+    lambda_invoke_arn = aws_lambda_function.app.invoke_arn
   }
 }
 

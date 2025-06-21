@@ -108,13 +108,6 @@ deploy:
 		-var="env=$(INSTANCE_NAME)" \
 		-var="dbstream_handler_zip=../$(DBSTREAM_HANDLER_FUNCTION_ZIP)" \
 		-var="app_handler_zip=../$(APP_LAMBDA_HANDLER_ZIP)"
-		-backend-config="key=dev/$(SERVICE_NAME)/$(INSTANCE_NAME)/terraform.tfstate" && \
-	terraform apply -auto-approve \
-		-var="app_name=$(APP_NAME)" \
-		-var="service_name=$(SERVICE_NAME)" \
-		-var="env=$(INSTANCE_NAME)" \
-		-var="dbstream_handler_zip=../$(DBSTREAM_HANDLER_FUNCTION_ZIP)" \
-		-var="app_handler_zip=../$(APP_LAMBDA_HANDLER_ZIP)"
 
 undeploy:
 	cd deploy && \

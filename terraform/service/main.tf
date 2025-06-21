@@ -32,6 +32,9 @@ module "apigateway" {
   lambda_name           = aws_lambda_function.app.function_name
   lambda_invoke_arn     = aws_lambda_function.app.invoke_arn
   openapi_template_path = local.openapi_template_path
+  openapi_template_replacements = {
+    "lambda_invoke_arn" = aws_lambda_function.app.invoke_arn
+  }
 }
 
 terraform {
